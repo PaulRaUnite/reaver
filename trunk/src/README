@@ -1,0 +1,87 @@
+--------------------------------------------------------------------------------
+ReaVer - Reactive System Verifier - version 0.9
+--------------------------------------------------------------------------------
+Copyright (C) 2012 Peter Schrammel
+
+This program is free software: you can redistribute it and/or modify 
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+peter.schrammel@inria.fr
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Installation requirements:
+--------------------------------------------------------------------------------
+
+OCAML 3.12.1
+OCAMLFIND (FINDLIB)
+
+GMP 5.0.1
+MPFR 3.0.0
+
+CAMLLIB_accstrat (revision 850)
+  svn://scm.gforge.inria.fr/svn/bjeannet/pkg/camllib/branches/accstrat
+
+FIXPOINT_accstrat (revision 850)
+  svn://scm.gforge.inria.fr/svn/bjeannet/pkg/camllib/branches/accstrat
+
+MLGMPIDL (revision 191)
+  svn://scm.gforge.inria.fr/svn/mlxxxidl/mlgmpidl/trunk
+
+APRON  (revision 1013) 
+  svn://scm.gforge.inria.fr/svnroot/apron/apron/trunk
+
+MLCUDDIDL (includes CUDD 2.4.2) (revision 271) 
+  svn://scm.gforge.inria.fr/svn/mlxxxidl/mlcuddidl/trunk
+
+BDDAPRON (revision 942)
+  svn://scm.gforge.inria.fr/svn/bjeannet/pkg/bddapron/trunk
+
+-----------------------------
+with max-strategy iteration:
+-----------------------------
+
+YICES 1.0.28
+  http://yices.csl.sri.com/download.shtml
+
+OCAMLYICES 0.3
+  https://github.com/polazarus/ocamlyices
+
+EGLIB 2.6.7
+  http://www.dii.uchile.cl/~daespino/EGlib_doc/main.html
+
+QSOPT_EX 2.5.6
+  http://www.dii.uchile.cl/~daespino/ESolver_doc/main.html
+
+STRATIMP 0.3.1
+  provided on the ReaVer web page
+
+------------
+with Zelus:
+------------
+
+ZELUS:
+  availability to be clarified
+
+
+--------------------------------------------------------------------------------
+Installation:
+--------------------------------------------------------------------------------
+ReaVer is installed in the Ocamlfind package directory.
+
+cp Makefile.config.model Makefile.config
+
+-- set paths in Makefile.config
+
+make
+make install
