@@ -2,7 +2,7 @@
 (* AnalysisStd *)
 (* standard analysis implementation *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -24,7 +24,7 @@ struct
 type analysisparam_t = std_param_t
 
 (* creates the manager for the fixpoint module *)
-let make_fp_manager env cfg initial trfct ws wd = 
+let make_fp_manager env cfg initial trfct = 
 {
   Fixpoint.bottom = (fun vertex -> Dom.bottom env);
   Fixpoint.canonical = 
@@ -44,6 +44,7 @@ let make_fp_manager env cfg initial trfct ws wd =
       (Dom.meet_condition env 
          (Dom.widening env s1 s2) dinv) env.Env.i_vars);
   Fixpoint.apply = trfct;
+  Fixpoint.odiff = None;
   Fixpoint.arc_init = (fun hedge -> ());
   Fixpoint.abstract_init = initial;
   Fixpoint.print_abstract = (fun fmt x -> Dom.print env fmt x);
@@ -52,8 +53,6 @@ let make_fp_manager env cfg initial trfct ws wd =
   Fixpoint.print_hedge = Format.pp_print_int;
     
   Fixpoint.accumulate = false;
-  Fixpoint.widening_start=ws;
-  Fixpoint.widening_descend=wd;
 
   Fixpoint.print_fmt = logger.Log.fmt;
   Fixpoint.print_analysis = Log.check_level logger Log.Debug;
@@ -78,8 +77,8 @@ let fpout_to_anres env cfg output =
     locs (Mappe.empty)
 
 (* fixpoint iteration strategy for standard analysis *)
-let make_strategy_std cfg sinit =
-  Fixpoint.make_strategy_default 
+let make_strategy_std cfg sinit ws wd =
+  Fixpoint.make_strategy_default ~widening_start:ws ~widening_descend:wd
     ~vertex_dummy:Cfg.locid_dummy ~hedge_dummy:Cfg.arcid_dummy cfg sinit
 
 (* standard transition function *) 
@@ -168,14 +167,13 @@ let analyze param env cf =
   in
   let fpman = make_fp_manager env cfg2 (get_init_state) 
     (trfct env param.s_dir assertion cfg2)
-    param.s_ws param.s_wd 
   in
   let sinit = 
     match param.s_dir with
       |`Forward -> Cfg.get_locidset_by_inv env cfg2 initial
       |`Backward -> Cfg.get_locidset_by_inv env cfg2 final
   in
-  let strategy = make_strategy_std cfg2 sinit in
+  let strategy = make_strategy_std cfg2 sinit param.s_ws param.s_wd in
   Log.debug2_o logger (FixpointType.print_strategy fpman) "strategy: " strategy;
   let output = Fixpoint.analysis_std fpman cfg2 sinit strategy in
   let anres = fpout_to_anres env cfg2 output in 
@@ -268,7 +266,7 @@ struct
 type analysisparam_t = hyb_param_t
 
 (* creates the manager for the fixpoint module *)
-let make_fp_manager env cfg initial trfct ws wd = 
+let make_fp_manager env cfg initial trfct = 
 {
   Fixpoint.bottom = (fun vertex -> Dom.bottom env);
   Fixpoint.canonical = 
@@ -288,6 +286,7 @@ let make_fp_manager env cfg initial trfct ws wd =
       (Dom.meet_condition env 
          (Dom.widening env s1 s2) dinv) env.Env.i_vars);
   Fixpoint.apply = trfct;
+  Fixpoint.odiff = None;
   Fixpoint.arc_init = (fun hedge -> ());
   Fixpoint.abstract_init = initial;
   Fixpoint.print_abstract = (fun fmt x -> Dom.print env fmt x);
@@ -296,8 +295,6 @@ let make_fp_manager env cfg initial trfct ws wd =
   Fixpoint.print_hedge = Format.pp_print_int;
     
   Fixpoint.accumulate = false;
-  Fixpoint.widening_start=ws;
-  Fixpoint.widening_descend=wd;
 
   Fixpoint.print_fmt = logger.Log.fmt;
   Fixpoint.print_analysis = Log.check_level logger Log.Debug;
@@ -328,8 +325,8 @@ let fpout_to_anres env cfg output =
     locs (Mappe.empty)
 
 (* fixpoint iteration strategy for standard analysis *)
-let make_strategy_std cfg sinit =
-  Fixpoint.make_strategy_default 
+let make_strategy_std cfg sinit ws wd =
+  Fixpoint.make_strategy_default ~widening_start:ws ~widening_descend:wd 
     ~vertex_dummy:Cfg.locid_dummy ~hedge_dummy:Cfg.arcid_dummy cfg sinit
 
 (* forward flow transition function *) 
@@ -405,10 +402,9 @@ let analyze param env cf =
   let get_init_state = get_initial_state env initial cfg in
   let fpman = make_fp_manager env cfg (get_init_state) 
     (trfct env assertion cfg)
-    param.h_ws param.h_wd 
   in
   let sinit = Cfg.get_locidset_by_inv env cfg initial in
-  let strategy = make_strategy_std cfg sinit in
+  let strategy = make_strategy_std cfg sinit param.h_ws param.h_wd in
   Log.debug2_o logger (FixpointType.print_strategy fpman) "strategy: " strategy;
   let output = Fixpoint.analysis_std fpman cfg sinit strategy in
   let anres = fpout_to_anres env cfg output in 

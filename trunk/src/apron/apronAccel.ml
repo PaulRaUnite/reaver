@@ -2,7 +2,7 @@
 (* ApronAccel *)
 (* numerical acceleration *)
 (* author: Peter Schrammel *)
-(* version: 0.8.0 *)
+(* version: 0.9.3 *)
 (* remarks: *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
@@ -226,7 +226,7 @@ let is_id_equ (v,e) =
     if j>=dims then true
     else
       let c = Apron.Linexpr0.get_coeff e j in
-      if (vdim<>j) && (Apron.Coeff.is_zero c) or 
+      if (vdim<>j) && (Apron.Coeff.is_zero c) ||
         (vdim=j) && (Apron.Coeff.equal_int c 1) then check_coeff (j+1)
       else false
   in
@@ -244,8 +244,8 @@ let is_reset_equ idvars (v,e) =
     if j>=dims then true
     else
       let c = Apron.Linexpr0.get_coeff e j in
-      if (vdim<>j) && ((Apron.Coeff.is_zero c) or 
-         (Util.array_mem (Apron.Environment.var_of_dim env j) idvars)) or 
+      if (vdim<>j) && ((Apron.Coeff.is_zero c) ||
+         (Util.array_mem (Apron.Environment.var_of_dim env j) idvars)) ||
         (vdim=j) && (Apron.Coeff.is_zero c) then check_coeff (j+1)
       else false
   in

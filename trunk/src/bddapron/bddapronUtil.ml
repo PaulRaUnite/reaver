@@ -2,7 +2,7 @@
 (* BddapronUtil *)
 (* utilities for manipulating BDD APRON entities *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -129,7 +129,7 @@ let boolexpr_to_numconvex_list env cond boolexpr =
  let cuddman = env.Bdd.Env.cudd in
  let rec descend b n supp =
     if Cudd.Bdd.is_cst supp then 
-      if (Cudd.Bdd.is_false b) or (Cudd.Bdd.is_false n) then []
+      if (Cudd.Bdd.is_false b) || (Cudd.Bdd.is_false n) then []
       else [(Cudd.Bdd.dand b n)]
     else 
     begin
@@ -339,7 +339,7 @@ let change_domain env old_doman s new_doman =
 let is_id_or_const_equ env cond (v,expr) =
     (Bddapron.Expr0.Bool.is_true env cond
       (Bddapron.Expr0.eq env cond expr (Bddapron.Expr0.var env cond v)))
-    or
+    ||
     (let is_cst = 
        match expr with
         |`Bool(e) -> Bddapron.Expr0.Bool.is_cst env cond e

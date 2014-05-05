@@ -2,7 +2,7 @@
 (* Accel *)
 (* analysis with abstract acceleration implementation *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (******************************************************************************)
 
 let logger = {Log.fmt=Format.std_formatter; 
@@ -22,7 +22,7 @@ struct
 type analysisparam_t = acc_param_t
 
 (* creates the manager for the fixpoint module *)
-let make_fp_manager env cfg initial trfct ws wd = 
+let make_fp_manager env cfg initial trfct = 
 {
   Fixpoint.bottom = (fun vertex -> Dom.bottom env);
   Fixpoint.canonical = 
@@ -38,6 +38,7 @@ let make_fp_manager env cfg initial trfct ws wd =
                      (Dom.bottom env) slist);
   Fixpoint.widening = (fun vertex s1 s2 -> Dom.widening env s1 s2);
   Fixpoint.apply = trfct;
+  Fixpoint.odiff = None;
   Fixpoint.arc_init = (fun hedge -> ());
   Fixpoint.abstract_init = initial;
   Fixpoint.print_abstract = (fun fmt x -> Dom.print env fmt x);
@@ -46,8 +47,6 @@ let make_fp_manager env cfg initial trfct ws wd =
   Fixpoint.print_hedge = Format.pp_print_int;
     
   Fixpoint.accumulate = false;
-  Fixpoint.widening_start=ws;
-  Fixpoint.widening_descend=wd;
 
   Fixpoint.print_fmt = logger.Log.fmt;
   Fixpoint.print_analysis = Log.check_level logger Log.Debug;
@@ -72,9 +71,9 @@ let fpout_to_anres env cfg output =
     locs (Mappe.empty)
 
 (* fixpoint iteration strategy for abstract acceleration *)
-let make_strategy_acc widening_start cfg sinit =
+let make_strategy_acc ws wd aws cfg sinit =
   let widening_start cfg l =
-    let (l,_) = l in
+    let (_,l) = l in
     let is_accel h = 
       let arc = PSHGraph.attrhedge cfg h in
       match arc with 
@@ -83,20 +82,20 @@ let make_strategy_acc widening_start cfg sinit =
     in
     let exists_accel hset =  
       PSette.fold 
-        (fun h res -> res or (is_accel h)) 
+        (fun h res -> res || (is_accel h)) 
         hset false
     in
-    let rec exist_accel l =
+(*    let rec exist_accel l =
       match l with
 	|Ilist.Atome(v)::tl -> 
           let res = PSette.fold 
-            (fun h res -> res or (is_accel h)) 
+            (fun h res -> res || (is_accel h)) 
             (PSHGraph.succhedge cfg v) false in
           if res then true
 	  else exist_accel tl
 	|Ilist.List(_)::tl -> exist_accel tl
         |[] -> false
-    in
+    in *)
     let rec all_accel l =
       match l with
 	|Ilist.Atome(v)::tl -> 
@@ -106,18 +105,20 @@ let make_strategy_acc widening_start cfg sinit =
 	|Ilist.List(_)::tl -> all_accel tl
         |[] -> true
     in
-    if all_accel l then widening_start else 0 
+    if all_accel l then aws else ws
   in
-  let flatten ~parent (_,b) = b<=0 or parent>0 in
+  let flatten ~parent (b,_) = b.FixpointType.widening_start<=0 || 
+                              parent.FixpointType.widening_start>0 in
   let filter arcid = 
     match PSHGraph.attrhedge cfg arcid with
     |Arc.Bool(_,_) -> false
     |_ -> true
   in
-  FixpointType.make_strategy_widening_start 
+  FixpointAcc.make_strategy_widening_start 
     ~depth:2
     ~priority:(PSHGraph.Filter (filter))
     ~widening_start:(widening_start cfg)
+    ~widening_descend:wd
     ~flatten
     ~vertex_dummy:Cfg.locid_dummy ~hedge_dummy:Cfg.arcid_dummy cfg sinit 
 
@@ -242,14 +243,14 @@ let analyze param env cf =
   in
   let fpman = make_fp_manager env cfg2 (get_init_state) 
     (trfct env param.a_dir assertion cfg2)
-    param.a_ws param.a_wd 
   in
   let sinit = 
     match param.a_dir with
       |`Forward -> Cfg.get_locidset_by_inv env cfg2 initial
       |`Backward -> Cfg.get_locidset_by_inv env cfg2 final
   in
-  let strategy = make_strategy_acc param.a_aws cfg2 sinit in
+  let strategy = make_strategy_acc param.a_ws param.a_wd param.a_aws 
+    cfg2 sinit in
   Log.debug2_o logger (FixpointType.print_strategy fpman) "strategy: " strategy;
   let output = Fixpoint.analysis_std fpman cfg2 sinit strategy in
   let anres = fpout_to_anres env cfg2 output in 

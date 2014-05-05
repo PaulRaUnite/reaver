@@ -2,7 +2,7 @@
 (* cfg *)
 (* control flow graph*)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -179,7 +179,7 @@ let remove_unreachable_locs env cfg initial =
   PSette.iter
     (fun v ->
       let preds = PSHGraph.pred_vertex cfg v in
-      if ((PSette.cardinal preds)=0) or 
+      if ((PSette.cardinal preds)=0) || 
          (((PSette.cardinal preds)=1)&&((PSette.choose preds)=v)) then
         PSHGraph.remove_vertex cfg v)
     locs
@@ -574,7 +574,7 @@ let split_location env cfg loc phi assertion =
 
   let (inv1,inv2) = BddapronUtil.split_boolexpr env.Env.env env.Env.cond 
     inv phi in
-  if not((Bddapron.Expr0.Bool.is_false env.Env.env env.Env.cond inv1) or 
+  if not((Bddapron.Expr0.Bool.is_false env.Env.env env.Env.cond inv1) || 
          (Bddapron.Expr0.Bool.is_false env.Env.env env.Env.cond inv2)) then
   begin
 

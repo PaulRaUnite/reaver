@@ -2,7 +2,7 @@
 (* ApronHybrid *)
 (* analysis utilities for hybrid transitions *)
 (* author: Peter Schrammel *)
-(* version: 0.8.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -27,7 +27,7 @@ let has_noncst_dynamics env ivars (v,e) =
   let rec check_coeff j =
     if j>=dims then false
     else
-      if (Apron.Coeff.is_zero (Apron.Linexpr0.get_coeff e j)) or
+      if (Apron.Coeff.is_zero (Apron.Linexpr0.get_coeff e j)) ||
          (Util.array_mem (Apron.Environment.var_of_dim env j) ivars)
         then check_coeff (j+1)
       else true
@@ -45,7 +45,7 @@ let has_nonzero_dynamics env ivars (v,e) =
         then check_coeff (j+1)
       else true
   in
-  (not (Apron.Coeff.is_zero (Apron.Linexpr0.get_cst e))) or 
+  (not (Apron.Coeff.is_zero (Apron.Linexpr0.get_cst e))) ||
   (check_coeff 0)
 
 (******************************************************************************)

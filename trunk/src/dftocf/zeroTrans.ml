@@ -2,7 +2,7 @@
 (* zeroTrans *)
 (* translates zero-crossings to hybrid automata *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -224,7 +224,7 @@ let get_purecontset env disc_equs cont_equs =
             let (g,l) = guardleaves.(i) in
             if has_init && (Bddapron.Expr0.Bool.is_true env.Env.env env.Env.cond
                  (Bddapron.Expr0.Bool.eq env.Env.env env.Env.cond g 
-                   (bool_var env Env.init_var))) or 
+                   (bool_var env Env.init_var))) || 
                (Bddapron.Apronexpr.equal Env.symbol l
                      (Bddapron.Apronexpr.var Env.symbol 
                        (Bddapron.Env.typ_of_var env.Env.env) v))

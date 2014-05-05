@@ -2,7 +2,7 @@
 (* env *)
 (* environment data structure and utilities *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -231,7 +231,7 @@ let compute_sizes cuddman typedefs s_vars i_vars =
 let var_of_cuddid env i =
   let s = PMappe.filter
     (fun v iarr -> 
-      Array.fold_right (fun ii accu -> accu or (ii=i)) iarr false)
+      Array.fold_right (fun ii accu -> accu || (ii=i)) iarr false)
     env.env.Bdd.Env.vartid
   in
   let (v,_) = PMappe.choose s in

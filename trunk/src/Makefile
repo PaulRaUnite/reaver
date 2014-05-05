@@ -32,7 +32,7 @@ DFTOCFDIR = dftocf
 DFTOCFMOD = df2cfDiscrete zeroTrans df2cfHybrid
 
 ANALYSISDIR = analysis
-ANALYSISMOD = analysisStd accel 
+ANALYSISMOD = analysisStd fixpointAcc accel 
 
 TRANSDIR = trans
 TRANSMOD = partitionUtil transGen transDiscrete transHybrid relAbstr transAcc

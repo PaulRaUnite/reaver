@@ -2,12 +2,12 @@
 (* main *)
 (* ReaVer main *)
 (* author: Peter Schrammel *)
-(* version: 0.9.1 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
 
-let version = "0.9.1"
+let version = "0.9.3"
 
 let logger = {Log.fmt=Format.std_formatter; 
               Log.module_name="Main";
@@ -134,11 +134,13 @@ let main () =
 *)
 
   (* run transformation/analysis strategy *)
+  let str_strat = (Option.get_strategy default_strat) in
+  Log.info_o logger (Format.pp_print_string) "Verification strategy: " str_strat;
   let strategy = Verif.str_to_strategy env
-    (Util.string_remove_whitespaces (Option.get_strategy default_strat)) in
+    (Util.string_remove_whitespaces str_strat) in
   let (result,_,_) = Verif.run env strategy cfprog in
 
-   Log.info logger (result_to_text result);
+  Log.info logger (result_to_text result);
 
   match !Option.cfg2dot_file with
     |"" -> ()

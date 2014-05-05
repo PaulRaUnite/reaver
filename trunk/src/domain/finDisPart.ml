@@ -2,7 +2,7 @@
 (* FinDisPart *)
 (* finitely disjunctive partitioned domain *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -58,7 +58,7 @@ let is_indep_in_guard env g vars1 vars2 =
   let gvars = Bddapron.Expr0.support env.Env.env env.Env.cond 
     (Bddapron.Expr0.Bool.to_expr g) in
   let res = (PSette.is_empty (PSette.inter (Util.list2psette (compare) 
-                  vars1) gvars)) or
+                  vars1) gvars)) ||
     (PSette.is_empty (PSette.inter (Util.list2psette (compare) vars2) gvars))
   in
   Log.debug3_o logger (Format.pp_print_bool) "res = " res;
@@ -79,7 +79,7 @@ let is_finitely_generating env (pvars,ivars) (v,expr) =
       else
       let zero_coeff = Apron.Coeff.is_zero (Apron.Linexpr0.get_coeff e j) in
       let pmone_coeff = (Apron.Coeff.equal_int 
-        (Apron.Linexpr0.get_coeff e j) 1) or (Apron.Coeff.equal_int 
+        (Apron.Linexpr0.get_coeff e j) 1) || (Apron.Coeff.equal_int 
         (Apron.Linexpr0.get_coeff e j) (-1)) in
       let vv = Apron.Environment.var_of_dim (Apron.Linexpr1.get_env ee) j in
       let is_input = Util.array_mem vv inputvars in

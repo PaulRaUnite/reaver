@@ -2,7 +2,7 @@
 (* Log *)
 (* generic logging module *)
 (* author: Peter Schrammel *)
-(* version: 0.3.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -53,7 +53,7 @@ let level2int level =
 let level_geq l1 l2 = (level2int l1)>=(level2int l2)
 
 let check_level logger level =
-  (level_geq logger.level level) && (level_geq !globallevel level) or
+  (level_geq logger.level level) && (level_geq !globallevel level) ||
   (level_geq !globallevel_weaken level)
 
 let log logger level msg =

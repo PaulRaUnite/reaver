@@ -4,15 +4,19 @@
 # Directories
 ######################################################################
 
+OCAMLDESTDIR ?= /usr/local/lib/ocaml/site-lib
+
 # Where to find APRON, yices etc
 #
-LIB-DIR = $(PROG)/apron/lib $(PROG)/yices/lib $(PROG)/QSopt_ex/lib \
-  $(PROG)/ocamlqsopt_ex $(PROG)/EGlib/lib 
+LIB-DIR = /usr/local/lib
 
-LIBS = ocamlyices yices QSopt_ex EGlib ocamlqsopt_ex
+LIBS = 
+#ocamlyices yices QSopt_ex EGlib ocamlqsopt_ex
 
-ADD-DOC-DIRS = $(PROG)/camllib $(PROG)/bddapron $(PROG)/apron $(PROG)/cudd \
-  $(PROG)/gmp
+#additional documentation directories for ocamldoc references
+ADD-DOC-DIRS = $(OCAMLDESTDIR)/camllib $(OCAMLDESTDIR)/bddapron \
+  $(OCAMLDESTDIR)/apron $(OCAMLDESTDIR)/cudd \
+  $(OCAMLDESTDIR)/gmp
 
 # Where to find OCAML ($(CAML_PREFIX)/bin, $(CAML_PREFIX)/lib/ocaml, ...)
 #
