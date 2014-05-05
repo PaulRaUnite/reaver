@@ -57,13 +57,15 @@ let options =
     ("-s",Arg.Set_string strategy,"use the given strategy");
     ("-s_help",Arg.Unit print_strategies,"prints the available strategies");
     ("-dom_help",Arg.Unit print_domains,"prints the available domains");
+    ("-inv",Arg.Clear Verif.check_property,"inference only, do not check property");
+    ("-print_overall",Arg.Set Verif.print_overall,"print overall invariant");
     ("-cudd_print_limit",Arg.Set_int Env.cudd_print_limit,
        "up to which BDD size formulas are printed");
     ("-env_num_factor",Arg.Set_int num_factor,
        "increase number of constraint variables in BDDs");
     ("-inputformat",Arg.Set_string inputformat,"specifies the input format (for command line and stdin)");
     ("-input",Arg.Set_string input,"the input program on the command line");
-    ("-xml",Arg.Unit (fun () -> Log.print_format := Xml),"log output in XML format");
+    ("-xml",Arg.Unit (fun () -> Log.print_format := Log.Xml),"log output in XML format");
     ("-dot",Arg.Set_string cfg2dot_file, "print CFG to dot file");
     ("-dot_noarcs",Arg.Clear cfg2dot_arcs,"do not print arc formulas to dot");
     ("-nbac",Arg.Set_string print2nbac_file, "print program in (Hybrid) NBAC format");

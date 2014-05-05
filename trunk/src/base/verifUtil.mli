@@ -21,3 +21,5 @@ type strategy_t = stratitem_t list
 (** refinement of CFG location definitions by the analysis result *)
 val refine : ?refine_bool:bool -> Env.t -> Program.cfprog_t -> 
   Analysis.refine_loc_t -> Program.cfprog_t
+
+val print_overall_reach : Env.t -> Program.cfprog_t -> Analysis.result_to_bddapron_t -> unit

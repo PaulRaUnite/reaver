@@ -61,33 +61,48 @@ let print_res_loc env v s contains_bad =
   let str2 = Format.flush_str_formatter () in
   Format.pp_print_string logger.Log.fmt (str1^(Util.string_compact str2));
   Format.pp_print_newline logger.Log.fmt ()
+*)
 
 (******************************************************************************)
 (* prints the overall reachable space *)
-(*let print_union_reach env cfprog anres =
+let print_overall_reach env cfprog bddapron_to_res =
+  let anres : Analysis.bddapron_res_t = bddapron_to_res () in
+  let apronman = Polka.manager_alloc_strict () in
+  let doman = Bddapron.Domain0.make_bdd apronman in
   let cfg = cfprog.Program.c_cfg in
   let initial = cfprog.Program.c_init in
   let initstates = Cfg.get_locidset_by_inv env cfg initial in 
-  Log.debug_o logger (Domain.O.print env) "union of reachable space: "
-    (List.fold_right
-      (fun (v,s) result -> Domain.O.join env result s)
-      (List.filter (fun (v,_) -> not (PSette.mem v initstates)) anres)
-      (Domain.O.bottom env));
-  Log.debug_o logger (Format.pp_print_int) "boolean state space size: "
-    ((BddapronUtil.bool_space_size env 
+  Log.info_o logger (Format.pp_print_int) 
+    "reachable boolean state space size: "
+    ((BddapronUtil.bool_space_size env.Env.env env.Env.cond env.Env.bs_vars
       (Cudd.Bdd.exist env.Env.cond.Bdd.Cond.supp 
        (Bddapron.Expr0.Bool.dand env.Env.env env.Env.cond
         (Bddapron.Expr0.Bool.dnot env.Env.env env.Env.cond 
           (Bddapron.Expr0.Bool.dor env.Env.env env.Env.cond
-             param.initial param.final))
-        (List.fold_right
-          (fun (v,s) result -> Bddapron.Expr0.Bool.dor env.Env.env env.Env.cond 
-                               (Domain.O.to_boolexpr env s) result)
+             initial cfprog.Program.c_final))
+        (Mappe.fold
+          (fun _ s result -> 
+             List.fold_left (fun res (b,_) -> 
+                 Bddapron.Expr0.Bool.dor env.Env.env env.Env.cond b res)
+               result s)
           anres
           (Bddapron.Expr0.Bool.dfalse env.Env.env env.Env.cond)))))
-      +2)*)
+      +2);
+  Log.info_o logger (Bddapron.Domain0.print doman env.Env.env) 
+    "overall invariant: "
+    (Mappe.fold
+      (fun _ s result -> 
+         Bddapron.Domain0.join doman result 
+           (Bddapron.Domain0.of_bddapron doman env.Env.env 
+              (List.map (fun (b,n) -> (b,
+                Apron.Abstract1.abstract0
+                  (Apron.Abstract1.of_lincons_array apronman
+                      env.Env.apronenv n)))
+                s)))
+      (Mappe.filter (fun  v _ -> not (PSette.mem v initstates)) anres)
+      (Bddapron.Domain0.bottom doman env.Env.env))
 
-
+(*
 (******************************************************************************)
 (* checks the analysis result, returns true if final is not reached *)
 let checkres env cfprog dir anres =

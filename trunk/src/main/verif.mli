@@ -12,6 +12,9 @@ exception InvalidStrategyOption of string
 (** invalid verification strategy option value *)
 exception InvalidStrategyOptionValue of string
 
+val print_overall : bool ref (** print overall invariant *)
+val check_property : bool ref (** check property or invariant *)
+
 (** parse verification strategies *) 
 val str_to_strategy : Env.t -> string -> VerifUtil.strategy_t
 

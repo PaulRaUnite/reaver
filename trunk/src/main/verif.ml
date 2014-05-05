@@ -15,6 +15,9 @@ exception InvalidStrategy of string
 exception InvalidStrategyOption of string
 exception InvalidStrategyOptionValue of string
 
+let print_overall = ref false
+let check_property = ref true
+
 (******************************************************************************)
 (* strategy descriptions *)
 (******************************************************************************)
@@ -412,10 +415,14 @@ let run env strategy cfprog =
            ("analysis '"^description^"' returned ") result;
          Log.info_o logger (print_result) "analysis result: " ();
          (* VerifUtil.checkres env cfprog direction anres*)
-         (*VerifUtil.print_union_reach env cfprog anres; *)
-         if result 
+         if result && !check_property
             or (match tailstrats with |[] -> true |_ -> false) 
-            then (result,get_anres,cfprog)
+            then 
+         begin
+           if !print_overall then 
+             VerifUtil.print_overall_reach env cfprog get_anres; 
+           (result,get_anres,cfprog)
+         end
          else
          begin
            (* Env.cudd_reorder env; *)
