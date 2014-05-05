@@ -3,7 +3,9 @@
 
 (** logging *)
 
-type level_t = Error | Warn | Info | Debug | Debug2 | Debug3
+type level_t = Error | Warn | Info | Debug | Debug2 | Debug3 | Hidden
+
+type print_format_t = Plain | Xml
 
 (** logger: declare one logger per module *)
 type logger_t = 
@@ -20,6 +22,10 @@ val globallevel : level_t ref
 (** the log level of all modules with less verbosity will be weakened
 to this value (i.e. made more verbose) *)
 val globallevel_weaken : level_t ref
+
+(** output format *)
+val print_format : print_format_t ref
+
 
 (** {2 Logging functions} *)
 

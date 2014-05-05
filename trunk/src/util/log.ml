@@ -7,7 +7,9 @@
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
 
-type level_t = Error | Warn | Info | Debug | Debug2 | Debug3
+type level_t = Error | Warn | Info | Debug | Debug2 | Debug3 | Hidden
+
+type print_format_t = Plain | Xml
 
 type logger_t = 
   {fmt: Format.formatter; 
@@ -22,6 +24,8 @@ let globallevel = ref (Info)
 to this value (i.e. made more verbose) *)
 let globallevel_weaken = ref (Error)
 
+let print_format = ref Plain
+
 let level2string level =
   match level with
     |Error -> "ERROR"
@@ -30,6 +34,17 @@ let level2string level =
     |Debug -> "DEBUG"
     |Debug2 -> "DEBUG2"
     |Debug3 -> "DEBUG3"
+    |Hidden -> "HIDDEN"
+
+let level2string_lc level =
+  match level with
+    |Error -> "error"
+    |Warn -> "warn"
+    |Info -> "info"
+    |Debug -> "debug"
+    |Debug2 -> "debug2"
+    |Debug3 -> "debug3"
+    |Hidden -> "hidden"
 
 let string2level level =
   match level with
@@ -38,6 +53,7 @@ let string2level level =
     |"DEBUG" -> Debug
     |"DEBUG2" -> Debug2
     |"DEBUG3" -> Debug3
+    |"HIDDEN" -> Hidden
     |_ -> Error
 
 
@@ -49,6 +65,7 @@ let level2int level =
     |Debug -> 4
     |Debug2 -> 5
     |Debug3 -> 6
+    |Hidden -> 9
 
 let level_geq l1 l2 = (level2int l1)>=(level2int l2)
 
@@ -58,23 +75,69 @@ let check_level logger level =
 
 let log logger level msg =
   if check_level logger level then
+  begin
+    match !print_format with
+    | Plain -> 
     begin
-    Format.fprintf logger.fmt "[%.3f] "(Sys.time ());
-    Format.pp_print_string logger.fmt (level2string level);
-    Format.fprintf logger.fmt " [%s] " logger.module_name;
-    Format.pp_print_string logger.fmt msg;
-    Format.pp_print_newline logger.fmt ()
+      Format.fprintf logger.fmt "[%.3f] " (Sys.time ());
+      Format.pp_print_string logger.fmt (level2string level);
+      Format.fprintf logger.fmt " [%s] " logger.module_name;
+      Format.pp_print_string logger.fmt msg;
+      Format.pp_print_newline logger.fmt ()
+    end
+    | Xml -> 
+    begin
+      Format.pp_print_string logger.fmt "  <";
+      Format.pp_print_string logger.fmt (level2string_lc level);
+      Format.fprintf logger.fmt " time=\"%.3f" (Sys.time ());
+      Format.pp_print_string logger.fmt "\"";
+      Format.fprintf logger.fmt " module=\"%s\">" logger.module_name;
+      Format.pp_print_newline logger.fmt ();
+      Format.pp_print_string logger.fmt "    <msg>";
+      Format.pp_print_string logger.fmt msg;
+      Format.pp_print_string logger.fmt "</msg>";
+      Format.pp_print_newline logger.fmt ();
+      Format.pp_print_string logger.fmt "  </";
+      Format.pp_print_string logger.fmt (level2string_lc level);
+      Format.pp_print_string logger.fmt ">";
+      Format.pp_print_newline logger.fmt ()
+    end
   end
 
 let log_o logger level print_o msg obj  =
   if check_level logger level then
   begin
-    Format.fprintf logger.fmt "[%.3f] "(Sys.time ());
-    Format.pp_print_string logger.fmt (level2string level);
-    Format.fprintf logger.fmt " [%s] " logger.module_name;
-    Format.pp_print_string logger.fmt msg;
-    print_o logger.fmt obj;
-    Format.pp_print_newline logger.fmt ()
+    match !print_format with
+    | Plain -> 
+    begin
+      Format.fprintf logger.fmt "[%.3f] " (Sys.time ());
+      Format.pp_print_string logger.fmt (level2string level);
+      Format.fprintf logger.fmt " [%s] " logger.module_name;
+      Format.pp_print_string logger.fmt msg;
+      print_o logger.fmt obj;
+      Format.pp_print_newline logger.fmt ()
+    end
+    | Xml -> 
+    begin
+      Format.pp_print_string logger.fmt "  <";
+      Format.pp_print_string logger.fmt (level2string_lc level);
+      Format.fprintf logger.fmt " time=\"%.3f" (Sys.time ());
+      Format.pp_print_string logger.fmt "\"";
+      Format.fprintf logger.fmt " module=\"%s\">" logger.module_name;
+      Format.pp_print_newline logger.fmt ();
+      Format.pp_print_string logger.fmt "    <msg>";
+      Format.pp_print_string logger.fmt msg;
+      Format.pp_print_string logger.fmt "</msg>";
+      Format.pp_print_newline logger.fmt ();
+      Format.pp_print_string logger.fmt "    <obj>";
+      print_o logger.fmt obj;
+      Format.pp_print_string logger.fmt "</obj>";
+      Format.pp_print_newline logger.fmt ();
+      Format.pp_print_string logger.fmt "  </";
+      Format.pp_print_string logger.fmt (level2string_lc level);
+      Format.pp_print_string logger.fmt ">";
+      Format.pp_print_newline logger.fmt ()
+    end
   end
 
 let debug2 logger msg = log logger Debug2 msg

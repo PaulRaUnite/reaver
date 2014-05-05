@@ -55,6 +55,16 @@ let display_dfprog_info env dfprog =
   Log.debug3_o logger (Format.pp_print_int) 
      "bool_size: " !Env.bool_size
 
+let print_header_footer footer =
+  match !Log.print_format with 
+    |Log.Xml -> 
+    begin 
+      Format.pp_print_string logger.Log.fmt 
+        ("<"^(if footer then "/" else "")^"reaver>");
+      Format.pp_print_newline logger.Log.fmt ();
+    end
+    |_ -> ()
+
 
 (******************************************************************************)
 (** {2 Parsing} *)
@@ -160,11 +170,11 @@ let main () =
     end
 
 let _ =
-  try
+  print_header_footer false;
+  begin try
    Log.globallevel := globallevel; Log.globallevel_weaken := globallevel_weaken;
    Log.info_o logger Format.pp_print_string
     ("ReaVer, version ") version; 
-   (*test () *)
      main () 
   with
   | Option.InvalidArgs ->
@@ -197,5 +207,8 @@ let _ =
     Log.error logger ("insufficient environment size: try with increasing values for option \"-env_num_factor <n>\"");
   | Sys_error(s) ->
     Log.error logger s
+  end;
+  print_header_footer true
+
 
 

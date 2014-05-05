@@ -63,6 +63,7 @@ let options =
        "increase number of constraint variables in BDDs");
     ("-inputformat",Arg.Set_string inputformat,"specifies the input format (for command line and stdin)");
     ("-input",Arg.Set_string input,"the input program on the command line");
+    ("-xml",Arg.Unit (fun () -> Log.print_format := Xml),"log output in XML format");
     ("-dot",Arg.Set_string cfg2dot_file, "print CFG to dot file");
     ("-dot_noarcs",Arg.Clear cfg2dot_arcs,"do not print arc formulas to dot");
     ("-nbac",Arg.Set_string print2nbac_file, "print program in (Hybrid) NBAC format");
@@ -77,7 +78,6 @@ let print_usage () = Arg.usage options usage
 
 let parse () =
   Arg.parse options (fun x -> inputfile := x) usage
-(*  if !inputfile = "" then raise InvalidArgs *)
 
 let get_df2cf default_df2cf = 
   match !df2cf with
