@@ -1,6 +1,13 @@
 # -*- mode: makefile -*-
 
 ######################################################################
+# Configurations / Features
+######################################################################
+
+#set to one to include the feature
+MAXSTRAT = 0
+
+######################################################################
 # Directories
 ######################################################################
 
@@ -9,9 +16,6 @@ OCAMLDESTDIR ?= /usr/local/lib/ocaml/site-lib
 # Where to find APRON, yices etc
 #
 LIB-DIR = /usr/local/lib
-
-LIBS = 
-#ocamlyices yices QSopt_ex EGlib ocamlqsopt_ex
 
 #additional documentation directories for ocamldoc references
 ADD-DOC-DIRS = $(OCAMLDESTDIR)/camllib $(OCAMLDESTDIR)/bddapron \

@@ -2,7 +2,7 @@
 (* verif *)
 (* verification strategy engine *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -17,6 +17,7 @@ exception InvalidStrategyOptionValue of string
 
 let print_overall = ref false
 let check_property = ref true
+let global_template = ref (Template.template_empty)
 
 (******************************************************************************)
 (* strategy descriptions *)
@@ -85,7 +86,12 @@ let strats =  (* identifier * short description * long description list *)
            "standard analysis, options: d=<domain>, b...backward, ws=<widening start>, wd=<descending iterations>"));
    ("aA",("analysis with abstract acceleration",
            "analysis with abstract acceleration, options:d=<domain>, b...backward, ws=<widening start>, wd=<descending iterations>, aws=<widening start for accelerable transitions>"));
-
+   ("aM",("numerical max-strategy iteration",
+          "numerical max-strategy iteration, options: d=<template domain>, i=<improvement algorithm>...e=enumerate strategies, s=use SMT (default)"));
+(*   ("aL",("logico-numerical max-strategy iteration",
+           "logico-numerical max-strategy iteration, options: d=<template domain>")); *)
+   ("aLP",("logico-numerical max-strategy iteration with power domain",
+           "logico-numerical max-strategy iteration with power domain, options: d=<template domain>, i=<improvement algorithm>...m=micro-iterations, n=no micro-iterations, s=symbolic template rows (default), t=try imp. strats"));
   (********** ANALYSIS ***********************************************)
   (********** hybrid ***********************************************)
    ("aH",("hybrid analysis with time elapse",
@@ -165,6 +171,12 @@ let parse_domain env dom =
         (module DomainStd.BoxProd : Domain.T)
     |"Ip" -> let _ = DomainStd.BoxPow.makeinit_doman () in
         (module DomainStd.BoxPow : Domain.T)
+    |"TEc" -> 
+        let templates = ParseParams.get_option options defaults "t"
+          (fun x -> Template.template_of_strlist env 
+             (ParseParams.comma_str_to_strlist x)) in
+        let _ = Template.EmuProd.makeinit_doman templates in
+        (module Template.EmuProd : Domain.T)
     |_ -> raise (InvalidStrategyOptionValue dom)
 
 let parse_bddapron_domain env dom = 
@@ -196,6 +208,27 @@ let parse_bddapron_domain env dom =
         (module DomainStd.BoxProd : Domain.NOPARAM_T)
     |"Ip" -> let _ = DomainStd.BoxPow.makeinit_doman () in
         (module DomainStd.BoxPow : Domain.NOPARAM_T)
+    |_ -> raise (InvalidStrategyOptionValue dom)
+
+let parse_template_domain env dom = 
+  let (domstr,options) = 
+    try ParseParams.parse_param dom 
+    with _ -> raise (InvalidStrategyOptionValue dom)
+  in
+  let defaults = Util.list2mappe [("p","c");("t","OCT")] in
+  let domstr = domstr^
+    (ParseParams.get_option options defaults "p" (function ""->"p" |x->x))
+  in
+  let templates = ParseParams.get_option options defaults "t"
+          (fun x -> Template.template_of_strlist env 
+             (ParseParams.comma_str_to_strlist x)) 
+  in
+  global_template := templates;
+  match domstr with
+    |"TEc" -> let _ = Template.EmuProd.makeinit_doman templates in
+        (module Template.EmuProd : Template.TEMPLATE_T)
+    |"TEp" -> let _ = Template.EmuPow.makeinit_doman templates in
+        (module Template.EmuPow : Template.TEMPLATE_T)
     |_ -> raise (InvalidStrategyOptionValue dom)
 
 (******************************************************************************)
@@ -308,6 +341,44 @@ let parse_aH env options =
     An.analyze (AnalysisStd.make_hyb_param ws wd),
       ((get_short_stratdesc "aH")^" "^
         " with "^(get_domain_desc dom)))
+
+let parse_aM env options = 
+  let defaults = Util.list2mappe 
+    [("d","TE");("i","s")] in
+  let dom = ParseParams.get_option options defaults "d" (fun x -> x) in
+  let imp_algorithm = ParseParams.get_option options defaults "i" 
+    (function |"s" -> true |_-> false) in
+  let module Dom = (val (parse_template_domain env dom): Template.TEMPLATE_T)in
+  let module An = Stratiter3.Num(Dom) in
+  VerifUtil.Analysis(
+    An.analyze imp_algorithm,
+    ((get_short_stratdesc "aM")^" with "^(get_domain_desc dom)))
+
+(*
+let parse_aL env options = 
+  let defaults = Util.list2mappe 
+    [("d","TE")] in
+  let dom = ParseParams.get_option options defaults "d" (fun x -> x) in
+  let module Dom = (val (parse_template_domain env dom): Template.TEMPLATE_T)in
+  let module An = Stratiter.Lognum(Dom) in
+  VerifUtil.Analysis(
+    An.analyze (),
+    ((get_short_stratdesc "aL")^" with "^(get_domain_desc dom)))
+*)
+
+let parse_aLP env options = 
+  let defaults = Util.list2mappe 
+    [("d","TE");("i","s")] in
+  let dom = ParseParams.get_option options defaults "d" (fun x -> x) in
+  let imp_algorithm = ParseParams.get_option options defaults "i" 
+    (function |"s" -> Stratiter2.SymbRows |"m" -> Stratiter2.MicroIter 
+      |"g" -> Stratiter2.NoMicroGenIter
+      |"n" -> Stratiter2.NoMicroIter |_ -> Stratiter2.TryImpStrat) in
+  let module Dom = (val (parse_template_domain env dom): Template.TEMPLATE_T)in
+  let module An = Stratiter2.PowLognum(Dom) in
+  VerifUtil.Analysis(
+    An.analyze imp_algorithm,
+    ((get_short_stratdesc "aLP")^" with "^(get_domain_desc dom)))
 
 (******************************************************************************)
 (* parses a strategy from a string *)

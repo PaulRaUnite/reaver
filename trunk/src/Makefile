@@ -10,13 +10,25 @@ PROG-NAME = reaver
 ####################### framework modules ######################################
 # ---------- util --------------------------------------------------------------
 UTILDIR = util
-UTILMOD = log util
+UTILMOD = log util timeMeas
 
 APRONDIR = apron
 APRONMOD = apronUtil apronAccel apronHybrid 
 
+LPDIR = lp
+LPMOD = 
+ifeq ($(MAXSTRAT),1)
+  LPMOD += apronLp
+endif
+
 BDDAPRONDIR = bddapron
 BDDAPRONMOD = mtbddUtil bddapronUtil bddapronAnalysis bddapronAccel bddapronHybrid 
+
+SMTDIR = smt
+SMTMOD = 
+ifeq ($(MAXSTRAT),1)
+  SMTMOD +=  yicesSmt bddapronSmt
+endif
 
 # ---------- base  -------------------------------------------------------------
 BASEDIR = base
@@ -26,13 +38,16 @@ BASE2MOD = program analysis verifUtil
 ####################### instantiation modules ##################################
 # ---------- impl ----------------------------------------------------------
 DOMAINDIR = domain
-DOMAINMOD = domainStd finDisPart  
+DOMAINMOD = domainStd finDisPart template
 
 DFTOCFDIR = dftocf
 DFTOCFMOD = df2cfDiscrete zeroTrans df2cfHybrid
 
 ANALYSISDIR = analysis
-ANALYSISMOD = analysisStd fixpointAcc accel 
+ANALYSISMOD = analysisStd fixpointAcc accel
+ifeq ($(MAXSTRAT),1)
+  ANALYSISMOD +=  stratiter stratiter2 stratiter3
+endif
 
 TRANSDIR = trans
 TRANSMOD = partitionUtil transGen transDiscrete transHybrid relAbstr transAcc
@@ -53,15 +68,37 @@ MAINUTILMOD = parserParam lexerParam parseParams
 MAINDIR = main
 MAINMOD = df2cf verif option main
 
+# ======= select ===============================================================
+ifeq ($(MAXSTRAT),0)
+  PREPARE = cp $(MAINDIR)/verif.no-maxstrat.ml $(MAINDIR)/verif.ml 
+else
+  PREPARE = cp $(MAINDIR)/verif.full.ml $(MAINDIR)/verif.ml
+endif
+
+
 ################# required packages ############################################
-REQ_PKG = "num unix str bigarray camllib cudd gmp apron.apron apron.polkaMPQ apron.octMPQ apron.boxMPQ bddapron.bddapron bddapron.bdd fixpoint" 
-# ocamlyices maxstratutil smt_util ocamlqsopt_ex maxstrat
+ifeq ($(MAXSTRAT),1)
+  REQ_PKG = "num unix str bigarray camllib cudd gmp apron.apron apron.polkaMPQ apron.octMPQ apron.boxMPQ bddapron.bddapron bddapron.bdd fixpoint ocamlyices"
+else
+  REQ_PKG = "num unix str bigarray camllib cudd gmp apron.apron apron.polkaMPQ apron.octMPQ apron.boxMPQ bddapron.bddapron bddapron.bdd fixpoint"
+endif
+
+# maxstratutil ocamlqsopt_ex maxstrat
 # zelus
+
+LIBS =
+ifeq ($(MAXSTRAT),1)
+  LIBS +=  ocamlyices yices
+endif
+#ocamlyices yices QSopt_ex EGlib ocamlqsopt_ex
+
+
 LIB-DIR-OPT = $(LIB-DIR:%=-ccopt -L%)
 LIBS-OPT = $(LIBS:%=-cclib -l%)
 
 ################# all modules ##################################################
 MLMOD = $(UTILMOD:%=$(UTILDIR)/%) $(APRONMOD:%=$(APRONDIR)/%) \
+ $(LPMOD:%=$(LPDIR)/%) $(SMTMOD:%=$(SMTDIR)/%) \
  $(BDDAPRONMOD:%=$(BDDAPRONDIR)/%) $(BASE1MOD:%=$(BASEDIR)/%) \
  $(DOMAINMOD:%=$(DOMAINDIR)/%)  $(BASE2MOD:%=$(BASEDIR)/%) \
  $(DFTOCFMOD:%=$(DFTOCFDIR)/%) \
@@ -69,7 +106,8 @@ MLMOD = $(UTILMOD:%=$(UTILDIR)/%) $(APRONMOD:%=$(APRONDIR)/%) \
  $(FRONTENDMOD:%=$(FRONTENDDIR)/%) $(MAINUTILMOD:%=$(MAINUTILDIR)/%) \
  $(MAINMOD:%=$(MAINDIR)/%)
 
-DIRS = $(UTILDIR) $(APRONDIR) $(BDDAPRONDIR) $(BASEDIR) $(DOMAINDIR) \
+DIRS = $(UTILDIR) $(APRONDIR) $(BDDAPRONDIR) $(LPDIR) $(SMTDIR) \
+ $(BASEDIR) $(DOMAINDIR) \
  $(DFTOCFDIR) $(ANALYSISDIR) $(TRANSDIR) $(FRONTENDDIR) \
  $(FRONTENDDIRS:%=$(FRONTENDDIR)/%) $(MAINUTILDIR) \
  $(MAINDIR)
@@ -94,6 +132,7 @@ clean:
 	for dir in $(DIRS) ; do \
 	  cd $$dir; /bin/rm -f *.cm[ioxa] *.o *.annot; cd $(SRCDIR) ; \
         done
+	rm -f $(MAINDIR)/verif.ml
 
 ################# documentation ################################################
 doc: $(MLMOD:%=%.mli)
@@ -111,6 +150,9 @@ cleandoc:
 
 %.cmi: %.mli 
 	$(OCAMLFIND) ocamlc $(OCAMLFLAGS) -package $(REQ_PKG) $(INCLUDES) -c $< -o $@
+
+$(MAINDIR)/verif.ml:  
+	$(PREPARE)
 
 %.cmo: %.ml %.cmi
 	$(OCAMLFIND) ocamlc $(OCAMLFLAGS) -package $(REQ_PKG) $(INCLUDES) -c $< -o $@

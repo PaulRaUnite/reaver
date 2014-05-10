@@ -74,6 +74,11 @@ val normalize_benumneg : 'a env_t -> 'a cond_t -> 'a boolexpr_t -> 'a boolexpr_t
 val boolexpr_to_numconvex_list : 'a env_t -> 'a cond_t -> 
   'a boolexpr_t -> 'a boolexpr_t list
 
+(** splits a boolexpr in a list of 
+     (boolean bdd, numerical constraint conjunction) *) 
+val boolexpr_to_numconvex_list3 : 'a env_t -> 'a cond_t -> 
+  'a boolexpr_t -> ('a boolexpr_t * 'a boolexpr_t) list
+
 (** returns the list of conjunctions (paths) of the given bdd *)
 val boolexpr_to_dnf : 'a env_t -> 'a boolexpr_t -> 'a boolexpr_t list
 
@@ -187,8 +192,6 @@ val depends_on_some_var_expr : 'a env_t -> 'a cond_t -> 'a expr_t ->
 (** checks whether the equations depend on at least one variable in vars *)
 val depends_on_some_var_equs : 'a env_t -> 'a cond_t -> 'a equs_t -> 
   'a vars_t -> bool
-
-
 
 (** {2 Variables and support} *)
 
@@ -315,3 +318,12 @@ val numequs_of_equs : 'a env_t -> 'a cond_t -> 'a equs_t -> ApronUtil.equs_t
 val numequs_of_equs_with_guards : 'a env_t -> 'a cond_t -> 
   'a vars_t -> 'a equs_t -> 
   ('a boolexpr_t * ApronUtil.equs_t) list
+
+(** converts numerical equations into the list (boolguard,APRON guard, APRON equs)) *)
+val numequs_to_guardedactions : 'a env_t -> 'a cond_t -> 
+  ?assertion: 'a boolexpr_t -> 
+  ('a, 'b, 'c, 'd) doman_t -> 'a equs_t -> 
+  ('a boolexpr_t * ApronUtil.linconss_t * 'a action_t MtbddUtil.array_t) list
+
+(** generates a list of a given number of disjoint boolean expressions over the given set of variables such that their disjunction is true *)
+val generate_boolencoding : 'a env_t -> 'a cond_t -> 'a vars_t -> int -> 'a boolexpr_t list

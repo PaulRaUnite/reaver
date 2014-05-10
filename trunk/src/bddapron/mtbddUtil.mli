@@ -57,6 +57,9 @@ val mtbdd_to_dnf : Cudd.Man.vt -> 'a Cudd.Mtbdd.t ->
 
 
 (** {2 Generic printing} *)
+val print_base_mtbdd : 'a Bddapron.Env.t -> 'a Bddapron.Cond.t -> 
+  (Format.formatter -> 'b base_t -> unit) -> Format.formatter -> 
+  'b base_mtbdd_t -> unit
 
 val print_array : (Format.formatter -> 'b base_t -> unit) -> Format.formatter ->
   'b array_t -> unit
@@ -103,6 +106,10 @@ val make_table_poly_arrset : 'a Bddapron.Env.t ->
 
 val print_poly : 'a Bddapron.Env.t -> 'a Bddapron.Cond.t -> 
   Format.formatter -> 'a poly_t -> unit 
+
+(** converts a (BDD,leaf) list to an MTBDD *)
+val bddleafarr_to_mtbdd : ('a -> 'b Cudd.Mtbdd.unique) ->
+  'c Bddapron.Env.t -> ('c Bddapron.Expr0.Bool.t * 'a) array -> 'b base_mtbdd_t
 
 (** converts a Bddapron Expr0 into an array MTBDD *)
 val bddapronexpr_to_arraymtbdd : 'a Bddapron.Env.t 

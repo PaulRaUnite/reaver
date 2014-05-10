@@ -41,6 +41,8 @@ val list_inter : 'a list -> 'a list -> 'a list
 val list_equal : ('a -> 'a -> bool) -> 'a list -> 'a list -> bool
 val list_product : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
 val list_filter2 :  ('a -> 'b -> bool) -> 'a list -> 'b list -> 'a list * 'b list
+val list_iteri2 : (int -> 'a -> 'b -> 'c) -> 'a list -> 'b list -> unit
+val list_fold_lefti : (int -> 'a -> 'b -> 'a) -> 'a -> 'b list -> 'a
 val list_print : ?csep:string -> ?copen:string -> ?cclose:string ->
   (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a list -> unit
 val assoclist_find_key : ('a * 'b) list -> 'b -> 'a
@@ -52,12 +54,21 @@ val array_split : ('a * 'b) array -> 'a array * 'b array
 val array_mem : 'a -> 'a array -> bool
 val array_diff : 'a array -> 'a array -> 'a array
 val array_map2 : ('a -> 'b -> 'c) -> 'a array -> 'b array -> 'c array
+val array_iter2 : ('a -> 'b -> unit) -> 'a array -> 'b array -> unit
 val array_exists : ('a -> bool) -> 'a array -> bool
 val array_exists2 : ('a -> 'b -> bool) -> 'a array -> 'b array -> bool
 val array_print : ?csep:string -> ?copen:string -> ?cclose:string ->
   (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a array -> unit
 val array_union :  'a array -> 'a array -> 'a array
 val array_inter :  'a array -> 'a array -> 'a array
+val array_get_index_of :  'a -> 'a array -> int
+val array_fold_lefti : (int -> 'a -> 'b -> 'a) -> 'a -> 'b array -> 'a
+
+(** {2 Hashtbl utilities} *)
+
+val hashtbl_to_list : ('a,'b) Hashtbl.t -> ('a * 'b) list
+val hashtbl_to_array : ('a * 'b) -> ('a,'b) Hashtbl.t -> ('a * 'b) array
+val hashtbl_print : ?csep:string -> ?copen:string -> ?cmapto:string -> ?cclose:string -> (Format.formatter -> 'a -> unit) -> (Format.formatter -> 'b -> unit) -> Format.formatter -> ('a,'b) Hashtbl.t -> unit
 
 (** {2 String utilities} *)
 

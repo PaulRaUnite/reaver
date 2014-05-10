@@ -115,6 +115,13 @@ let mtbdd_to_dnf cuddman mtbdd  =
 (******************************************************************************)
 (* printing *)
 (******************************************************************************)
+
+let print_base_mtbdd env cond print_baseleaf fmt mtbdd =
+  Cudd.Mtbdd.print
+    (Bddapron.Expr0.O.print_bdd env cond)
+    (print_baseleaf)
+    fmt mtbdd
+
 let print_array print_baseleaf fmt arr = 
   Format.pp_print_string fmt "[";
   Array.iter 
@@ -231,45 +238,49 @@ let print_poly env cond fmt e =
    |Bint(e,_,_) -> Format.pp_print_int fmt e
 
 (******************************************************************************)
+(* converts a (BDD,leaf) list to an MTBDD *)
+let bddleafarr_to_mtbdd make_leaf env bddleafarr =
+  let cuddman = env.Bdd.Env.cudd in
+  let n = Array.length bddleafarr in
+  assert(n>=1);
+  if (Array.length bddleafarr)=1 then 
+    Cudd.Mtbdd.cst_u cuddman (make_leaf (snd bddleafarr.(0)))
+  else
+    let rec fold i =
+      if i<n-2 then 
+        Cudd.Mtbdd.ite (fst bddleafarr.(i)) 
+          (Cudd.Mtbdd.cst_u cuddman (make_leaf (snd bddleafarr.(i))))
+          (fold (i+1)) 
+      else
+        Cudd.Mtbdd.ite (fst bddleafarr.(i)) 
+          (Cudd.Mtbdd.cst_u cuddman (make_leaf (snd bddleafarr.(i))))
+          (Cudd.Mtbdd.cst_u cuddman 
+            (make_leaf (snd bddleafarr.(i+1)))) 
+    in
+    fold 0
+
+
+(******************************************************************************)
 (* converts a Bddapron Expr0 into an MTBDD *)
 let bddapron_to_mtbdd make_leaf env expr = 
   let cuddman = env.Bdd.Env.cudd in
-  let bddleafarr_to_mtbdd bddleafarr =
-    let n = Array.length bddleafarr in
-    assert(n>=1);
-    if (Array.length bddleafarr)=1 then 
-      Cudd.Mtbdd.cst_u cuddman (make_leaf (snd bddleafarr.(0)))
-    else
-      let rec fold i =
-        if i<n-2 then 
-          Cudd.Mtbdd.ite (fst bddleafarr.(i)) 
-            (Cudd.Mtbdd.cst_u cuddman (make_leaf (snd bddleafarr.(i))))
-            (fold (i+1)) 
-        else
-          Cudd.Mtbdd.ite (fst bddleafarr.(i)) 
-            (Cudd.Mtbdd.cst_u cuddman (make_leaf (snd bddleafarr.(i))))
-            (Cudd.Mtbdd.cst_u cuddman 
-               (make_leaf (snd bddleafarr.(i+1)))) 
-      in
-      fold 0
-  in
   match expr with
     |`Apron(e) -> 
        Cudd.User.map_op1 (fun e -> make_leaf (Apron(Cudd.Mtbdd.get e))) e
     |`Benum(e) -> 
        let bddleafarr = Array.map (fun (bdd,l) -> (bdd,Benum l)) 
          (Array.of_list (Bdd.Enum.guardlabels env e)) in
-       bddleafarr_to_mtbdd bddleafarr
+       bddleafarr_to_mtbdd make_leaf env bddleafarr
     |`Bint(e) -> 
        let sign = e.Bdd.Int.signed in
        let len = Array.length e.Bdd.Int.reg in
        let bddleafarr = Array.map (fun (bdd,i) -> (bdd,Bint (i,sign,len))) 
          (Array.of_list (Bdd.Int.guardints cuddman e)) in
-       bddleafarr_to_mtbdd bddleafarr
+       bddleafarr_to_mtbdd make_leaf env bddleafarr
     |`Bool(e) -> 
        let bddleafarr = [|(e,Bool (Cudd.Bdd.dtrue cuddman));
               (Cudd.Bdd.dnot e,Bool (Cudd.Bdd.dfalse cuddman))|] in
-       bddleafarr_to_mtbdd bddleafarr
+       bddleafarr_to_mtbdd make_leaf env bddleafarr
 
 (******************************************************************************)
 (** converts a Bddapron Expr0 into an array MTBDD *)

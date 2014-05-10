@@ -61,6 +61,7 @@ type t =
                                translation of continuous zero-crossings *)
       q_i_vars : vars_t; (* input variables introduced during 
                             translation of zero-crossings *)
+      p_vars : vars_t; (* variables for strategy encoding *)
     }
 
 (** {2 constants} *)
@@ -92,7 +93,7 @@ val get_q_var : var_t -> bool -> var_t
 val get_q_bool_i_var :  var_t -> int -> var_t
 
 (** returns the (var,type) map of the state variables *)
-val get_s_varsmap :  t -> (var_t, var_t Bddapron.Env.typ) Mappe.t
+val get_s_varslist :  t -> (var_t * var_t Bddapron.Env.typ) list
 
 (** computes the careset (some admissible combinations of 
     numerical constraints *)  
@@ -137,7 +138,7 @@ val number_of_boolvars : t -> vars_t -> int
 
 (** groups BDD variables (for fixing order during re-ordering) *)
 val cudd_group :  ('a, 'b, 'c, 'd, 'e) Bdd.Env.t0 ->
-           ('a, [> 'f Bdd.Env.typ ]) Mappe.t -> unit
+           ('a * [> 'f Bdd.Env.typ ]) list -> unit
 
 (** reorders the BDD variables *)
 val cudd_reorder :  t -> unit

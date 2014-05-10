@@ -27,3 +27,6 @@ val print_strategies : Format.formatter -> unit -> unit
 
 (** print available abstract domains *)
 val print_domains : Format.formatter -> unit -> unit
+
+(** used for comparisons *)
+val global_template : Template.template_t ref 

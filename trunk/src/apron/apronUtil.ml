@@ -2,7 +2,7 @@
 (* ApronUtil *)
 (* utilities for manipulating APRON entities *)
 (* author: Peter Schrammel *)
-(* version: 0.9.0 *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -132,6 +132,15 @@ let make_zero_linexpr env =
 (** creates equations (v,0) for the given variables *)
 let get_zero_equations_for env vars =
   Array.map (fun v ->  (v,make_zero_linexpr env)) vars
+
+(******************************************************************************)
+(** returns the identity transition function for a set of variables *)
+let get_id_equations_for env vars =
+  Array.map (fun v -> 
+      let cons = make_zero_linexpr env in
+      Apron.Linexpr1.set_coeff cons v (Apron.Coeff.s_of_int 1);
+      (v,cons)) 
+    vars
 
 (******************************************************************************)
 (** creates the constraints (v=0) for the given variables *)
@@ -301,8 +310,43 @@ let linconss_is_eq a1 a2 =
     (Array.to_list a2.Apron.Lincons1.lincons0_array)
     true)
 
+let linconss_is_unsat linconss = 
+  ((Array.length linconss.Apron.Lincons1.lincons0_array)=1 && 
+       (Apron.Lincons1.is_unsat 
+         (lincons1_of_lincons0 linconss.Apron.Lincons1.array_env 
+            linconss.Apron.Lincons1.lincons0_array.(0))))
+
+let lincons_is_false = Apron.Lincons1.is_unsat
+let lincons_is_true c = 
+  lincons0_is_eq (Apron.Lincons1.get_lincons0 c) 
+    (Apron.Lincons0.make (Apron.Linexpr0.make None)
+       Apron.Lincons0.SUPEQ)
+
 let linconss_empty env = 
   {Apron.Lincons1.lincons0_array=[||];Apron.Lincons1.array_env=env}
+
+let linconss_false env = 
+  {Apron.Lincons1.lincons0_array=[|Apron.Lincons1.get_lincons0 (Apron.Lincons1.make_unsat env)|];
+   Apron.Lincons1.array_env=env}
+
+let linconss_true = linconss_empty
+
+let linconss_append l1 l2 = 
+  {Apron.Lincons1.lincons0_array=Array.append 
+    l1.Apron.Lincons1.lincons0_array l2.Apron.Lincons1.lincons0_array;
+   Apron.Lincons1.array_env=l1.Apron.Lincons1.array_env}
+
+(******************************************************************************)
+let coeff_is_infty c = 
+  match c with 
+    |Apron.Coeff.Scalar s -> (Apron.Scalar.is_infty s)>0
+    |Apron.Coeff.Interval i -> (Apron.Scalar.is_infty i.Apron.Interval.inf)>0
+
+let coeff_is_neginfty c = 
+  match c with 
+    |Apron.Coeff.Scalar s -> (Apron.Scalar.is_infty s)<0
+    |Apron.Coeff.Interval i -> (Apron.Scalar.is_infty i.Apron.Interval.inf)<0
+
 
 (******************************************************************************)
 (* OLD STUFF *)

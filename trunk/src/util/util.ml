@@ -173,6 +173,25 @@ let list_product combine l1 l2 =
       List.append res (List.map (fun e2 -> combine e1 e2) l2))
     l1 []
 
+(* iterates through two lists simultaneously with an index *)
+let list_iteri2 f l1 l2 =
+  let len = List.length l1 in
+  assert((List.length l2)=len);
+  if len=0 then ()
+  else
+  begin
+    let i = ref(0) in  
+    List.iter2 
+      (fun e1 e2 -> 
+        f !i e1 e2;
+        i := !i+1)
+      l1 l2
+  end
+
+let list_fold_lefti f x a =
+  let i = ref 0 in
+  List.fold_left (fun x a -> let res = f !i x a in i:=!i+1; res) x a
+
 (************************** array utilities  ******************************)
 
 (* splits an array of pairs (like List.split) *)
@@ -222,10 +241,23 @@ let array_map2 f l1 l2 =
   begin
     let e0 = f l1.(0) l2.(0) in
     let res = Array.make len e0 in
-    for i=0 to len-1 do
+    res.(0) <- e0;
+    for i=1 to len-1 do
       res.(i) <- f l1.(i) l2.(i)
     done;
     res
+  end
+
+(* iterates in parallel over two arrays (like List.iter2) *)
+let array_iter2 f l1 l2 =
+  let len = Array.length l1 in
+  assert((Array.length l2)=len);
+  if len=0 then ()
+  else
+  begin
+    for i=0 to len-1 do
+      f l1.(i) l2.(i)
+    done
   end
 
 (* checks whether the predicate p evaluates true over at least one element in l *)
@@ -261,6 +293,20 @@ let array_print ?(csep=";") ?(copen="[") ?(cclose="]") pp fmt l =
       pp fmt e) 
     l;
   Format.pp_print_string fmt cclose
+
+(* returns the index of the given element or raises Not_found *) 
+let array_get_index_of x a = 
+  let rec array_get_index_of_rec i = 
+    if i=(Array.length a) then raise Not_found
+    else 
+      if a.(i)=x then i
+      else array_get_index_of_rec (i+1)
+  in
+  array_get_index_of_rec 0
+
+let array_fold_lefti f x a =
+  let i = ref 0 in
+  Array.fold_left (fun x a -> let res = f !i x a in i:=!i+1; res) x a
 
 (************************** string manipulation  ******************************)
 
@@ -306,3 +352,30 @@ let print_fixed fmt len s =
     for i=slen to len-1 do Format.pp_print_string fmt " "; done
   end
 
+let hashtbl_to_list x = 
+  Hashtbl.fold (fun a b res -> (a,b)::res) x []
+
+let hashtbl_to_array dummy x = 
+  let len = Hashtbl.length x in
+  if len=0 then [||] 
+  else
+  begin
+    let res = Array.create len dummy in
+    let i = ref 0 in
+    Hashtbl.iter (fun a b -> res.(!i)<-(a,b); i:=!i+1) x;
+    res
+  end
+
+(* prints a hashtable *)
+let hashtbl_print ?(csep=";") ?(copen="[") ?(cmapto=" -> ") ?(cclose="]") pp_key pp_val fmt h =
+  Format.pp_print_string fmt copen;
+  let start = ref(true) in
+  Hashtbl.iter
+    (fun a b -> 
+      if not(!start) then Format.pp_print_string fmt csep
+      else start := false; 
+      pp_key fmt a;
+      Format.pp_print_string fmt cmapto;
+      pp_val fmt b) 
+    h;
+  Format.pp_print_string fmt cclose

@@ -57,6 +57,7 @@ type t =
   disc_q_vars : vars_t;
   cont_q_vars : vars_t;
   q_i_vars : vars_t;
+  p_vars : vars_t;
 }
 
 let symbol = Bddapron.Env.string_symbol
@@ -66,9 +67,11 @@ let zeros_size = ref(-1)
 let bool_i_size = ref(0)
 let z_i_size = ref(0)
 let q_size = ref(0)
+let p_size = ref(30)
 let cudd_print_limit = ref 100 (* up to which BDD size formulas are printed*)
 
 let zero_prefix = "__z"
+let p_prefix = "__p"
 let epsilon = 0.015625
 let init_var = "init"
 (*let ctrl_var = "_ctrl"*)
@@ -110,16 +113,16 @@ let compute_careset env =
 let cudd_reorder env = Cudd.Man.reduce_heap env.cuddman 
   Cudd.Man.REORDER_SIFT 0
 
-let get_s_varsmap env =
-  List.fold_right
-    (fun v m -> Mappe.add v (Bddapron.Env.typ_of_var env.env v) m)
-    env.s_vars (Mappe.empty)
+let get_s_varslist env =
+  List.fold_left
+    (fun l v -> (v,(Bddapron.Env.typ_of_var env.env v))::l)
+    [] env.s_vars 
 
 (* grouping variables *)
 let cudd_group env s_vars  =
   (* fix the order of all bits of a variable including primed and new_inputs *)
-  Mappe.iter
-    (fun var typ ->
+  List.iter
+    (fun (var,typ) ->
       match typ with
         | #Bdd.Env.typ ->
 	  let tid = PMappe.find var env.Bdd.Env.vartid in
@@ -237,6 +240,10 @@ let var_of_cuddid env i =
   let (v,_) = PMappe.choose s in
   v
 
+let rec make_bool_vars prefix n = 
+  if n=0 then [] 
+  else (prefix^(string_of_int n),`Bool)::(make_bool_vars prefix (n-1))
+
 (******************************************************************************)
 (* creates the environment *)
 (******************************************************************************)
@@ -252,10 +259,10 @@ let make ?(num_factor=1) typedefs s_varstyp i_varstyp =
     compute_sizes cuddman typedefs s_varstyp i_varstyp in
 
   zeros_size := num_size*2*num_factor;
-  bool_size := 3*bool_state_size + bool_input_size + 10* !zeros_size +1;
+  bool_size := 3*bool_state_size + bool_input_size + 10* !zeros_size +1 + !p_size; 
 
   (* a factor 2 is minimum, our benchmarks need 3 without retry *)
-  cond_size := 30*num_size*num_factor; 
+  cond_size := 20*num_size*num_factor; 
   Log.debug_o logger (Format.pp_print_int) "bool_size=" !bool_size;
   Log.debug_o logger (Format.pp_print_int) "cond_size=" !cond_size;
   Log.debug_o logger (Format.pp_print_int) "zeros_size=" !zeros_size;
@@ -271,6 +278,8 @@ let make ?(num_factor=1) typedefs s_varstyp i_varstyp =
   (* add types *)
   PMappe.iter (Bddapron.Env.add_typ_with env) typedefs; 
   (* add variables *)
+  let p_varstyp = make_bool_vars p_prefix !p_size in
+  let (p_vars,_) = List.split p_varstyp in
   let i_varstyp = Util.mappe2list i_varstyp in
   let _ = Bddapron.Env.add_vars_with env i_varstyp in
   let s_varstyp = Util.mappe2list s_varstyp in
@@ -278,6 +287,7 @@ let make ?(num_factor=1) typedefs s_varstyp i_varstyp =
   let (new_i_vars,_) = List.split new_i_varstyp in
   let _ = Bddapron.Env.add_vars_with env new_i_varstyp in
   let (bi_vars,ni_vars) = env_to_boolnumvars env in
+  let _ = Bddapron.Env.add_vars_with env p_varstyp in
   let _ = Bddapron.Env.add_vars_with env s_varstyp in
   (* add primed variables *)
   let primed_varstyp = List.map 
@@ -286,6 +296,7 @@ let make ?(num_factor=1) typedefs s_varstyp i_varstyp =
 
   (* lists for different kinds of variables *)
   let (b_vars,n_vars) = env_to_boolnumvars env in
+  let b_vars = List.concat [b_vars;p_vars] in
   let (s_vars,_) = List.split s_varstyp in
   let i_vars = List.append bi_vars ni_vars in
   let bs_vars = Util.list_inter b_vars s_vars in
@@ -349,6 +360,7 @@ let make ?(num_factor=1) typedefs s_varstyp i_varstyp =
    disc_q_vars = [];
    cont_q_vars = [];
    q_i_vars = [];
+   p_vars;
   }
 
 (** splits the equations into a list of variables and a list of expressions *)

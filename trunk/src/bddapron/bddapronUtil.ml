@@ -124,13 +124,13 @@ let normalize_benumneg env cond boolexpr =
 
 (******************************************************************************)
 (** splits a boolexpr in a list of 
-     (numerical constraint conjunction /\ boolean bdd *) 
-let boolexpr_to_numconvex_list env cond boolexpr =
+     (boolean bdd, numerical constraint conjunction) *) 
+let boolexpr_to_numconvex_list3 env cond boolexpr =
  let cuddman = env.Bdd.Env.cudd in
  let rec descend b n supp =
     if Cudd.Bdd.is_cst supp then 
       if (Cudd.Bdd.is_false b) || (Cudd.Bdd.is_false n) then []
-      else [(Cudd.Bdd.dand b n)]
+      else [(b,n)]
     else 
     begin
       let topvar = Cudd.Bdd.topvar supp in
@@ -152,6 +152,13 @@ let boolexpr_to_numconvex_list env cond boolexpr =
    end
   in
   descend boolexpr (Cudd.Bdd.dtrue cuddman) (Cudd.Bdd.support boolexpr)
+
+(******************************************************************************)
+(** splits a boolexpr in a list of 
+     (numerical constraint conjunction /\ boolean bdd *) 
+let boolexpr_to_numconvex_list env cond boolexpr =
+  List.map (fun (b,n) -> Cudd.Bdd.dand b n)
+    (boolexpr_to_numconvex_list3 env cond boolexpr)
 
 (******************************************************************************)
 (** returns the list of conjunctions (paths) of the given bdd *)
@@ -588,7 +595,6 @@ let get_guardset_below_level_mtbdd env cond level mtbdd =
   in
   guardset
 
-
 (******************************************************************************)
 (* conversions *)
 (******************************************************************************)
@@ -880,3 +886,55 @@ let expr_forget_supp supp expr =
                 (fun bdd -> Cudd.Bdd.exist supp bdd) e.Bdd.Int.reg)})
     |`Apron(e) -> assert(false)  (* boolean expression expected *)
 
+(******************************************************************************)
+(** converts numerical equations into the list (boolguard,APRON guard, APRON equs)) *)
+let numequs_to_guardedactions env cond 
+    ?(assertion=Bddapron.Expr0.Bool.dtrue env cond) doman numequs =
+  let numarr_table = MtbddUtil.make_table_action_array env in
+  let numarr = product_numequs env numarr_table numequs in
+  let numarr = Cudd.Mtbdd.ite assertion numarr (Cudd.Mtbdd.cst env.Bdd.Env.cudd numarr_table [||]) in
+  let res = Array.fold_left 
+    (fun res (g,l) ->
+      Log.debug3_o logger (MtbddUtil.print_array (MtbddUtil.print_action env)) 
+        "actions: " l;
+      let gbnn = boolexpr_to_numconvex_list3 env cond g in
+      match gbnn with
+      | [] -> res
+      | gbnn -> 
+      begin  
+      List.fold_left 
+        (fun res (gb,gn) ->
+          if (Array.length l)=0 then (gb,
+            ApronUtil.linconss_false (Bddapron.Env.apron env),l)::res
+          else 
+          begin
+            Log.debug3_o logger (print_boolexpr env cond) "bool-guard: " gb;
+            Log.debug3_o logger (print_boolexpr env cond) "boolnum-guard: " gn;
+            let gn = boolexpr_to_linconss env cond doman [] gn in
+            Log.debug3_o logger ApronUtil.print_linconss "num-guard: " gn;
+            (gb,gn,l)::res 
+          end) 
+        res gbnn
+      end)
+    [] (Cudd.Mtbdd.guardleafs numarr)
+  in
+  res
+
+(** generates a list of a given number of disjoint boolean expressions over the given set of variables such that their disjunction is true *)
+let generate_boolencoding env cond vars n = 
+  let rec generate vars b n =  
+    if n<=1 then [b]
+    else
+    match vars with 
+    |[] -> assert(false);
+    |v::tvars -> 
+      let v = Bddapron.Expr0.Bool.var env cond v in
+      let b1 = Bddapron.Expr0.Bool.dand env cond b v in
+      let b2 = Bddapron.Expr0.Bool.dand env cond b 
+        (Bddapron.Expr0.Bool.dnot env cond v) in
+      List.append
+        (generate tvars b1 (n/2))
+        (generate tvars b2 (n-(n/2)))
+  in
+  generate vars (Bddapron.Expr0.Bool.dtrue env cond) n
+  

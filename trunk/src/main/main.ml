@@ -136,12 +136,6 @@ let main () =
 
   (* dfprog to cfprog *)
   let (env,cfprog) = Df2cf.run env dfprog (Option.get_df2cf default_df2cf) in
-(*
-  let fexpr = BddapronUtil.get_fexpr (BddapronUtil.get_primed_var env.Env.env) env.Env.env env.Env.cond cfprog.Program.c_disc_equs in
-  Env.cudd_reorder env;
-  let fexpr = BddapronUtil.simplify_boolexpr env.Env.env env.Env.cond fexpr env.Env.cond.Bdd.Cond.careset in 
-  Log.info_o logger (BddapronUtil.print_boolexpr env.Env.env env.Env.cond) "fexpr = " fexpr; 
-*)
 
   (* run transformation/analysis strategy *)
   let str_strat = (Option.get_strategy default_strat) in

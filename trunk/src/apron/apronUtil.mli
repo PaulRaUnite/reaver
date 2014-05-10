@@ -61,6 +61,9 @@ val make_zero_linexpr : env_t -> linexpr_t
 (** creates equations (v,0) for the given variables *)
 val get_zero_equations_for : env_t -> vars_t -> equs_t
 
+(** creates equations (v,v) for the given variables *)
+val get_id_equations_for : env_t -> vars_t -> equs_t
+
 (** creates the constraints (v=0) for the given variables *)
 val get_zero_linconss_for : env_t -> vars_t -> linconss_t
 
@@ -78,8 +81,32 @@ val linconss_is_eq : linconss_t -> linconss_t -> bool
 (** returns an empty conjunction of constraints *)
 val linconss_empty : env_t -> linconss_t
 
+(** returns true if the given linconss is false *)
+val linconss_is_unsat : linconss_t -> bool
+
+(** returns true if the given lincons is true *)
+val lincons_is_true : lincons_t -> bool
+
+(** returns true if the given lincons is false *)
+val lincons_is_false : lincons_t -> bool
+
+(** returns the conjunction of constraints representing true *)
+val linconss_true : env_t -> linconss_t
+
+(** returns the conjunction of constraints representing false *)
+val linconss_false : env_t -> linconss_t
+
+(** conjoins two conjunction of constraints *)
+val linconss_append : linconss_t -> linconss_t -> linconss_t
+
 (** rename primed variables to unprimed variables in the abstract value *)
 val rename_primed_to_unprimed : (var_t -> var_t) ->'a abstract_t -> vars_t -> 'a abstract_t
+
+(** returns true if the given APRON coefficient is plus infinity *) 
+val coeff_is_infty : Apron.Coeff.t -> bool
+
+(** returns true if the given APRON coefficient is minus infinity *) 
+val coeff_is_neginfty : Apron.Coeff.t -> bool
 
 (** {2 Abstract domain operations} *)
 

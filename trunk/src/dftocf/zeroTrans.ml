@@ -527,6 +527,7 @@ let extend_environment env param zspecs =
      Env.disc_q_vars = disc_q_varlist;
      Env.cont_q_vars = cont_q_varlist;
      Env.q_i_vars = qi_varlist;
+     Env.p_vars = env.Env.p_vars;
   }
   in
   (newenv,newparam,perm)
@@ -574,8 +575,9 @@ let translate env dfprog disc_sem cont_sem =
   let init_z = Program.permute_boolexpr perm dfprog.d_init in
   let final_z = Program.permute_boolexpr perm dfprog.d_final in
   let ass_z = Program.permute_boolexpr perm dfprog.d_ass in
-  Env.cudd_group env.Env.env (Env.get_s_varsmap env);
-  Env.cudd_make_varmap env.Env.env (Util.mappe2list (Env.get_s_varsmap env));
+  let s_varslist = Env.get_s_varslist env in
+  Env.cudd_group env.Env.env s_varslist;
+  Env.cudd_make_varmap env.Env.env s_varslist;
 
   let doman = Bddapron.Domain0.man_of_bdd (Bddapron.Domain0.make_bdd 
     ((Polka.manager_alloc_strict ())))  in 
