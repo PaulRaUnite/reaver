@@ -24,7 +24,7 @@ INSTALL_MLCUDDIDL=0
 INSTALL_BDDAPRON=1
 
 # for max-strategy iteration support
-# - download Yices from http://yices.csl.sri.com/download-yices1.shtml to $TMP
+# - download Yices from http://yices.csl.sri.com/cgi-bin/yices-newlicense.cgi?file=yices-1.0.40-x86_64-unknown-linux-gnu.tar.gz to $TMP
 INSTALL_EGLIB=0
 INSTALL_QSOPT_EX=0
 INSTALL_OCAMLYICES=0
@@ -122,7 +122,7 @@ fi
 if [ $INSTALL_OCAMLYICES -ne 0 ]; then
 git clone https://github.com/polazarus/ocamlyices.git
 cd ocamlyices
-./install-yices.sh ../yices-1.0.40-x86_64-unknown-linux-gnu-static-gmp.tar.gz
+./install-yices.sh ../yices-1.0.40-x86_64-unknown-linux-gnu.tar.gz
 ./configure
 make
 sudo make install

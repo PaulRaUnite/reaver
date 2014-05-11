@@ -46,8 +46,9 @@ DFTOCFMOD = df2cfDiscrete zeroTrans df2cfHybrid
 ANALYSISDIR = analysis
 ANALYSISMOD = analysisStd fixpointAcc accel
 ifeq ($(MAXSTRAT),1)
-  ANALYSISMOD +=  stratiter stratiter2 stratiter3
+  ANALYSISMOD +=  stratiter2 stratiter3
 endif
+#stratiter 
 
 TRANSDIR = trans
 TRANSMOD = partitionUtil transGen transDiscrete transHybrid relAbstr transAcc
@@ -78,12 +79,11 @@ endif
 
 ################# required packages ############################################
 ifeq ($(MAXSTRAT),1)
-  REQ_PKG = "num unix str bigarray camllib cudd gmp apron.apron apron.polkaMPQ apron.octMPQ apron.boxMPQ bddapron.bddapron bddapron.bdd fixpoint ocamlyices"
+  REQ_PKG = "num unix str bigarray camllib cudd gmp apron.apron apron.polkaMPQ apron.octMPQ apron.boxMPQ bddapron.bddapron bddapron.bdd fixpoint ocamlyices ocamlqsopt_ex"
 else
   REQ_PKG = "num unix str bigarray camllib cudd gmp apron.apron apron.polkaMPQ apron.octMPQ apron.boxMPQ bddapron.bddapron bddapron.bdd fixpoint"
 endif
 
-# maxstratutil ocamlqsopt_ex maxstrat
 # zelus
 
 LIBS =
@@ -98,8 +98,8 @@ LIBS-OPT = $(LIBS:%=-cclib -l%)
 
 ################# all modules ##################################################
 MLMOD = $(UTILMOD:%=$(UTILDIR)/%) $(APRONMOD:%=$(APRONDIR)/%) \
- $(LPMOD:%=$(LPDIR)/%) $(SMTMOD:%=$(SMTDIR)/%) \
- $(BDDAPRONMOD:%=$(BDDAPRONDIR)/%) $(BASE1MOD:%=$(BASEDIR)/%) \
+ $(LPMOD:%=$(LPDIR)/%) $(BDDAPRONMOD:%=$(BDDAPRONDIR)/%)  \
+ $(SMTMOD:%=$(SMTDIR)/%) $(BASE1MOD:%=$(BASEDIR)/%) \
  $(DOMAINMOD:%=$(DOMAINDIR)/%)  $(BASE2MOD:%=$(BASEDIR)/%) \
  $(DFTOCFMOD:%=$(DFTOCFDIR)/%) \
  $(ANALYSISMOD:%=$(ANALYSISDIR)/%) $(TRANSMOD:%=$(TRANSDIR)/%) \

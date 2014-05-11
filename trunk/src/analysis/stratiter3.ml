@@ -2,7 +2,7 @@
 (* stratiter3 *)
 (* numerical max strategy iteration *)
 (* author: Peter Schrammel *)
-(* version: 0.9.1m *)
+(* version: 0.9.3 *)
 (* This file is part of ReaVer released under the GNU GPL.  
    Please read the LICENSE file packaged in the distribution *)
 (******************************************************************************)
@@ -135,8 +135,8 @@ let smt_build_gt_value_elt env t_elt (s_elt:Template.bound_t) =
   let cons = Template.cons_instantiate env t_elt s_elt in 
 (*    Log.debug3_o logger (Template.print_cons) "cons: " cons; *)
   let smtcons = BddapronSmt.apron_lincons_to_smt env.Env.env cons in
-  let smtcons = Smt.rename_real_vars nvarmap (Smt.Not smtcons) in
-(*  Log.debug3 logger ("smt-gtv: "^(Smt.string_of_formula smtcons)); *)
+  let smtcons = YicesSmt.rename_real_vars nvarmap (YicesSmt.Not smtcons) in
+(*  Log.debug3 logger ("smt-gtv: "^(YicesSmt.string_of_formula smtcons)); *)
   smtcons
 
 let smt_build_value_elt env t_elt s_elt =
@@ -144,7 +144,7 @@ let smt_build_value_elt env t_elt s_elt =
   let cons = Template.cons_instantiate env t_elt s_elt in
 (*    Log.debug3_o logger (Template.print_cons) "cons: " cons; *)
   let smtcons = BddapronSmt.apron_lincons_to_smt env.Env.env cons in
-(*  Log.debug3 logger ("smt-val: "^(Smt.string_of_formula smtcons)); *)
+(*  Log.debug3 logger ("smt-val: "^(YicesSmt.string_of_formula smtcons)); *)
   smtcons
  
 let smt_build_value env template (ss:Template.bound_t array) =
@@ -160,13 +160,13 @@ let smt_build_equs env g equs =
   let smtg = BddapronSmt.apron_linconss_to_smt env.Env.env g in
   let smtequs = BddapronSmt.apron_equs_to_smt env.Env.env equs in
   let res = BddapronSmt.smt_and [smtg;smtequs] in
-  Log.debug3 logger ("smt-g: "^(Smt.string_of_formula smtg)); 
-  Log.debug3 logger ("smt-equs: "^(Smt.string_of_formula res)); 
+  Log.debug3 logger ("smt-g: "^(YicesSmt.string_of_formula smtg)); 
+  Log.debug3 logger ("smt-equs: "^(YicesSmt.string_of_formula res)); 
   res
 
 let smt_build_boolexpr env boolexpr = 
   let res = BddapronSmt.boolexpr_to_smt !bexpr_bddmap env.Env.env env.Env.cond boolexpr in
-  let res = Smt.And(res,(BddapronSmt.bddmap_to_smt !bexpr_bddmap)) in
+  let res = YicesSmt.And(res,(BddapronSmt.bddmap_to_smt !bexpr_bddmap)) in
   res
 
 (******************************************************************************)
@@ -223,7 +223,7 @@ let strategy_improve_loci env doman template cfg assertion
     Log.debug2_o logger BddapronSmt.smt_print_result "smt-result: " m1;
     TimeMeas.stop tm_smt;
     TimeMeas.start tm_smt_ctx;
-    Smt.del_ctx ctx1; 
+    YicesSmt.del_ctx ctx1; 
     TimeMeas.stop tm_smt_ctx;
 
     match m1 with
@@ -262,12 +262,12 @@ let strategy_improve_loci2 env doman template cfg assertion
         let (g,equs) = get_gequs env doman cfg assertion arcid in
         let smtequs = smt_build_equs env g equs in
         let smtv0 = smt_build_value env template (Mappe.find srcid s) in
-        Smt.Or (f,Smt.And 
-          (Smt.Eq (Smt.Real arcid_var,Smt.Const 
-               {Smt.num=Big_int.big_int_of_int arcid; 
-                Smt.den=Big_int.big_int_of_int 1}),
-             Smt.And (smtequs,smtv0))))
-      open_arcs Smt.F 
+        YicesSmt.Or (f,YicesSmt.And 
+          (YicesSmt.Eq (YicesSmt.Real arcid_var,YicesSmt.Const 
+               {YicesSmt.num=Big_int.big_int_of_int arcid; 
+                YicesSmt.den=Big_int.big_int_of_int 1}),
+             YicesSmt.And (smtequs,smtv0))))
+      open_arcs YicesSmt.F 
     in
 
     let benum_careset = benum_careset env in
@@ -289,7 +289,7 @@ let strategy_improve_loci2 env doman template cfg assertion
     Log.debug2_o logger BddapronSmt.smt_print_result "smt-result: " m1;
     TimeMeas.stop tm_smt;
     TimeMeas.start tm_smt_ctx;
-    Smt.del_ctx ctx1; 
+    YicesSmt.del_ctx ctx1; 
     TimeMeas.stop tm_smt_ctx;
 
     match m1 with
@@ -297,7 +297,7 @@ let strategy_improve_loci2 env doman template cfg assertion
       |Some m -> 
       begin
         let arcid = match Hashtbl.find m arcid_var with
-	  |Smt.VRatio v -> Big_int.int_of_big_int v.Smt.num
+	  |YicesSmt.VRatio v -> Big_int.int_of_big_int v.YicesSmt.num
 	  |_ -> assert false
         in
         let srcid = (PSHGraph.predvertex cfg arcid).(0) in
@@ -325,7 +325,7 @@ let strategy_improve ~strategy_improve_loci
     (fun (updated,strat,open_strats) ((locid,i),(open_arcs,_)) -> 
       let (updated1,strat,open_strats) = 
         strategy_improve_loci env doman template cfg assertion s locid i strat open_strats open_arcs in
-      (updated or updated1,strat,open_strats))
+      (updated || updated1,strat,open_strats))
     (false,strat,open_strats) (Mappe.bindings open_strats)
   in
   TimeMeas.stop tm_imp;

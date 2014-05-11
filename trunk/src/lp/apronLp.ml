@@ -55,7 +55,7 @@ let rec eliminate_const_expr exp =
     TheLp.Sum(es) -> TheLp.Sum(List.map eliminate_const_expr es)
   | TheLp.Mul(a, exp) -> TheLp.Mul(a, eliminate_const_expr exp)
   | TheLp.Var(_) as v -> v 
-  | TheLp.Const(x) -> TheLp.Const(Maxstratutil.Num.GmpRatio.zero) 
+  | TheLp.Const(x) -> TheLp.Const(Ocamlqsopt_ex.Numutil.GmpRatio.zero) 
 
 let eliminate_constants_constr constr =
    match constr with
@@ -70,23 +70,23 @@ let eliminate_constants_constrs constrs = List.map (fun a -> (eliminate_constant
 
 (* converts APRON coefficients into LP coefficients *)
 let scalar_to_numinf c =
-  if (Apron.Scalar.is_infty c>0) then Maxstratutil.Num.InfGmpRatio.Infty
-  else if (Apron.Scalar.is_infty c<0) then Maxstratutil.Num.InfGmpRatio.Neginfty
-  else if Apron.Scalar.equal_int c 1 then Maxstratutil.Num.InfGmpRatio.one
+  if (Apron.Scalar.is_infty c>0) then Ocamlqsopt_ex.Numutil.InfGmpRatio.Infty
+  else if (Apron.Scalar.is_infty c<0) then Ocamlqsopt_ex.Numutil.InfGmpRatio.Neginfty
+  else if Apron.Scalar.equal_int c 1 then Ocamlqsopt_ex.Numutil.InfGmpRatio.one
   else if Apron.Scalar.equal_int c (-1) then 
-    Maxstratutil.Num.InfGmpRatio.minus_one
-  else Maxstratutil.Num.InfGmpRatio.Num(
-         Maxstratutil.Num.GmpRatio.from_string (Apron.Scalar.to_string c))
+    Ocamlqsopt_ex.Numutil.InfGmpRatio.minus_one
+  else Ocamlqsopt_ex.Numutil.InfGmpRatio.Num(
+         Ocamlqsopt_ex.Numutil.GmpRatio.from_string (Apron.Scalar.to_string c))
 
 let scalar_to_num c =
-  if Apron.Scalar.equal_int c 1 then Maxstratutil.Num.GmpRatio.one
+  if Apron.Scalar.equal_int c 1 then Ocamlqsopt_ex.Numutil.GmpRatio.one
   else if Apron.Scalar.equal_int c (-1) then 
-    Maxstratutil.Num.GmpRatio.minus_one
-  else Maxstratutil.Num.GmpRatio.from_string 
+    Ocamlqsopt_ex.Numutil.GmpRatio.minus_one
+  else Ocamlqsopt_ex.Numutil.GmpRatio.from_string 
     (Apron.Scalar.to_string c)
  
 let coeff_to_num c = 
-  if Apron.Coeff.is_zero c then Maxstratutil.Num.GmpRatio.zero
+  if Apron.Coeff.is_zero c then Ocamlqsopt_ex.Numutil.GmpRatio.zero
   else
   match c with
     |Apron.Coeff.Scalar(c) -> scalar_to_num c 
@@ -94,7 +94,7 @@ let coeff_to_num c =
 
 let num_to_coeff c = 
   Apron.Coeff.s_of_mpqf 
-    (Mpqf.of_string (Maxstratutil.Num.GmpRatio.to_string c))
+    (Mpqf.of_string (Ocamlqsopt_ex.Numutil.GmpRatio.to_string c))
 
 (* converts an APRON linexpr1 into LP expression *)
 let linexpr_to_lp_expr rename linexpr =
@@ -115,9 +115,9 @@ let lincons_to_lp_cons rename lincons =
   let e = linexpr_to_lp_expr rename (Apron.Lincons1.get_linexpr1 lincons) in
   match Apron.Lincons1.get_typ lincons with
     |Apron.Lincons0.EQ -> 
-      TheLp.Eq (TheLp.Const(Maxstratutil.Num.GmpRatio.from_int 0), e) 
+      TheLp.Eq (TheLp.Const(Ocamlqsopt_ex.Numutil.GmpRatio.from_int 0), e) 
     |Apron.Lincons0.SUPEQ -> 
-      TheLp.Le (TheLp.Const(Maxstratutil.Num.GmpRatio.from_int 0), e)
+      TheLp.Le (TheLp.Const(Ocamlqsopt_ex.Numutil.GmpRatio.from_int 0), e)
     |_ -> raise (NotSupported "strict inequalities")
 
 (*****************************************************************************)
@@ -152,14 +152,14 @@ let make_conss_gequs ?(rename_lhs=(fun x -> x)) ?(rename_rhs=(fun x -> x)) equs 
 let make_conss_vars_bounded_one vars = 
   List.map (fun v -> 
       TheLp.Le (TheLp.Var (Apron.Var.to_string v), 
-                TheLp.Const(Maxstratutil.Num.GmpRatio.from_int 1)))
+                TheLp.Const(Ocamlqsopt_ex.Numutil.GmpRatio.from_int 1)))
     (Array.to_list vars)
 
 let make_conss_vars_bounded_minusone vars = 
   List.map (fun v -> 
-      TheLp.Le (TheLp.Mul (Maxstratutil.Num.GmpRatio.minus_one,
+      TheLp.Le (TheLp.Mul (Ocamlqsopt_ex.Numutil.GmpRatio.minus_one,
                            TheLp.Var (Apron.Var.to_string v)), 
-                TheLp.Const(Maxstratutil.Num.GmpRatio.from_int 1)))
+                TheLp.Const(Ocamlqsopt_ex.Numutil.GmpRatio.from_int 1)))
     (Array.to_list vars)
 
 let concat_conss = List.append
@@ -189,7 +189,7 @@ let make_obj_fct_max_sum_vars vars =
 
 let make_obj_fct_max_negsum_vars vars = 
   TheLp.Max(TheLp.Sum 
-    (List.map (fun v -> TheLp.Mul (Maxstratutil.Num.GmpRatio.minus_one,
+    (List.map (fun v -> TheLp.Mul (Ocamlqsopt_ex.Numutil.GmpRatio.minus_one,
                            TheLp.Var (Apron.Var.to_string v)))
       (Array.to_list vars)))
 
@@ -200,11 +200,11 @@ let make_obj_fct_max_negsum_vars vars =
 let solve conss obj_fct = 
   let (obj_val,sol) = TheLp.solve' (TheLp.new_prob_name ()) conss obj_fct in  
   let obj_val = match obj_val with
-    |Maxstratutil.Num.InfGmpRatio.Infty -> 
+    |Ocamlqsopt_ex.Numutil.InfGmpRatio.Infty -> 
        Apron.Coeff.Scalar (Apron.Scalar.of_infty 1)
-    |Maxstratutil.Num.InfGmpRatio.Neginfty -> 
+    |Ocamlqsopt_ex.Numutil.InfGmpRatio.Neginfty -> 
        Apron.Coeff.Scalar (Apron.Scalar.of_infty (-1))
-    |Maxstratutil.Num.InfGmpRatio.Num x -> num_to_coeff x
+    |Ocamlqsopt_ex.Numutil.InfGmpRatio.Num x -> num_to_coeff x
   in
   (obj_val,(fun v -> 
 (*num_to_coeff (sol (Apron.Var.to_string v))))*)
@@ -222,12 +222,12 @@ let get_bounded_vars conss vars =
   let obj_fct = make_obj_fct_max_negsum_vars vars in
   let (obj_val,sol) = TheLp.solve' (TheLp.new_prob_name ()) conss obj_fct in
   Log.debug2 logger
-           ("obj_val = "^(Maxstratutil.Num.InfGmpRatio.to_string obj_val));
+           ("obj_val = "^(Ocamlqsopt_ex.Numutil.InfGmpRatio.to_string obj_val));
   Array.of_list (List.filter (fun v ->
          Log.debug2 logger 
            ((Apron.Var.to_string v)^" = "^
-           (Maxstratutil.Num.GmpRatio.to_string (sol (Apron.Var.to_string v))));
-        Maxstratutil.Num.GmpRatio.(=.) (sol (Apron.Var.to_string v)) 
-                                       (Maxstratutil.Num.GmpRatio.from_int 0))
+           (Ocamlqsopt_ex.Numutil.GmpRatio.to_string (sol (Apron.Var.to_string v))));
+        Ocamlqsopt_ex.Numutil.GmpRatio.(=.) (sol (Apron.Var.to_string v)) 
+                                       (Ocamlqsopt_ex.Numutil.GmpRatio.from_int 0))
       (Array.to_list vars))
  

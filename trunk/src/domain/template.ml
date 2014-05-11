@@ -200,7 +200,7 @@ let apron_approx_template apronenv apronman tt s =
     tt []
   in
 (*  Log.debug3_o logger (Apron.Abstract1.print) "s = " s; *)
-  let res = if (Apron.Abstract1.is_top apronman s) or
+  let res = if (Apron.Abstract1.is_top apronman s) ||
      (Apron.Abstract1.is_bottom apronman s) then s
   else 
     Apron.Abstract1.of_lincons_array apronman apronenv

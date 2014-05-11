@@ -1122,7 +1122,7 @@ let rec stratcfg_split_locs env cfg b =
     Log.debug3_o logger (BddapronUtil.print_boolexpr env.Env.env env.Env.cond)
       "inv3 = " inv3;
  
-    if(not((Bddapron.Expr0.Bool.is_false env.Env.env env.Env.cond inv1) or 
+    if(not((Bddapron.Expr0.Bool.is_false env.Env.env env.Env.cond inv1) || 
          (Bddapron.Expr0.Bool.is_false env.Env.env env.Env.cond inv2))) then
       stratcfg_split_loc env cfg locid inv1 inv2;
     if(not(Bddapron.Expr0.Bool.is_false env.Env.env env.Env.cond inv3)) then
@@ -1144,7 +1144,7 @@ let stratcfg_add_arc env cfg bsrc btgt arc =
   Log.debug3_o logger (Util.list_print Format.pp_print_int) "tgtids: " tgtids;
   List.iter (fun srcid ->
     List.iter (fun tgtid -> 
-      if srcid<>tgtid or (List.length srcids)=1 then
+      if srcid<>tgtid || (List.length srcids)=1 then
       begin
         let (i,_,_) = arc in Log.debug3_o logger Format.pp_print_int "add arc for i = " i;
         let arcid = stratcfg_next_arcid cfg in
@@ -1296,7 +1296,7 @@ let strat_to_lp_conss env doman initial template assertion strat s =
   let f = Util.array_fold_lefti (* old value constraints *)
     (fun i f s_elt -> 
       Array.fold_left (fun f (b,cons) -> 
-        if (ApronUtil.lincons_is_false cons) or 
+        if (ApronUtil.lincons_is_false cons) || 
            (ApronUtil.lincons_is_true cons) then f 
         else
         begin
