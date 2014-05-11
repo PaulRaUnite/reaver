@@ -21,13 +21,14 @@ INSTALL_CAMLLIB=0
 INSTALL_FIXPOINT=0
 INSTALL_APRON=0
 INSTALL_MLCUDDIDL=0
-INSTALL_BDDAPRON=1
+INSTALL_BDDAPRON=0
 
 # for max-strategy iteration support
 # - download Yices from http://yices.csl.sri.com/cgi-bin/yices-newlicense.cgi?file=yices-1.0.40-x86_64-unknown-linux-gnu.tar.gz to $TMP
 INSTALL_EGLIB=0
 INSTALL_QSOPT_EX=0
 INSTALL_OCAMLYICES=0
+INSTALL_OCAMLQSOPT_EX=0
 
 #################################################################################
 
@@ -130,7 +131,6 @@ cd ..
 fi
 
 #mlgmpidl
-#-r273
 if [ $INSTALL_MLGMPIDL -ne 0 ]; then
 svn checkout svn://scm.gforge.inria.fr/svnroot/mlxxxidl/mlgmpidl/trunk mlgmpidl
 cd mlgmpidl
@@ -142,7 +142,6 @@ cd ..
 fi
 
 #mlcuddidl
-#-r273
 if [ $INSTALL_MLCUDDIDL -ne 0 ]; then
 svn checkout svn://scm.gforge.inria.fr/svnroot/mlxxxidl/mlcuddidl/trunk mlcuddidl
 cd mlcuddidl
@@ -154,7 +153,6 @@ cd ..
 fi
 
 #camllib
-#-r983
 if [ $INSTALL_CAMLLIB -ne 0 ]; then
 svn checkout svn://scm.gforge.inria.fr/svnroot/bjeannet/pkg/camllib/trunk camllib
 cd camllib
@@ -199,22 +197,18 @@ sudo make install
 cd ..
 fi
 
-#policy/impl
-#cd policy_impl
-#cp Makefile.inc.model Makefile.inc
-#emacs Makefile.inc
-#cd smt_util2
-#make
-#sudo make install
-#cd ../maxstratutil
-#make
-#sudo make install
-#cd ../ocamlqsopt_ex
-#make
-#sudo make install
+
+popd
+
+#ocamlqsopt_ex
+if [ $INSTALL_OCAMLQSOPT_EX -ne 0 ]; then
+cd ../lib/ocamlqsopt_ex 
+cp Makefile.config.model Makefile.config
+sudo make install
+cd ../../src
+fi
 
 #reaver
-popd
 cp Makefile.config.model Makefile.config
-#emacs Makefile.config
-make
+emacs Makefile.config
+make opt
