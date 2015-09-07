@@ -1,0 +1,1422 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{hyperlatex}
+\W\usepackage{sequential}
+\W\usepackage{mypanels}
+\T\usepackage{fullpage}
+\T\usepackage{amsmath}
+\T\usepackage{mysymb}
+\T\usepackage[english]{babel}
+\usepackage{xspace}
+\usepackage{color}
+
+
+\T\usepackage{pstricks,pst-node,pst-tree,pstcol}
+\T\usepackage{graphics}
+\T\usepackage{url}
+\W\newcommand{\url}[1]{\xlink{link}{#1}}
+
+
+\T\renewcommand{\baselinestretch}{1.02}
+\T\setlength{\parindent}{0pt}
+
+\newcommand{\lustre}{\xlink{LUSTRE}{http://www-verimag.imag.fr/SYNCHRONE/}\xspace}
+
+\definecolor{prog}{rgb}{0,0.4,0.1}
+\definecolor{progkeyword}{rgb}{0.8,0,0}
+\definecolor{token}{rgb}{0,0,1}
+\definecolor{emph}{rgb}{0,0.1,0.6}
+\definecolor{example}{rgb}{.8,0,1}
+\newcommand{\pkw}[1]{\textcolor{progkeyword}{#1}}
+\newcommand{\pco}[1]{\textcolor{black}{-- #1}}
+\W\renewcommand{\emph}[1]{\textcolor{emph}{#1}}
+
+
+\newcommand{\sx}[1]{\textcolor{prog}{\texttt{<}#1\texttt{>}}}
+\newcommand{\kw}[1]{\textcolor{progkeyword}{\textbf{#1}}}
+\newcommand{\tk}[1]{\textcolor{token}{\texttt{#1}}}
+\newcommand{\sor}{\texttt{~|~}}
+
+\newenvironment{prog}
+{\begin{example}\begin{small}\color{prog}}
+{\end{small}\end{example}\par}
+
+\newenvironment{nbac}
+{\begin{example}\begin{small}\color{example}}
+{\end{small}\end{example}}
+
+\newenvironment{syntax}
+{
+\T\medskip
+\begin{tabular}{rcll}
+}
+{
+\end{tabular}
+\T\par\medskip
+}
+
+\newcommand{\framenode}[2]{\rnode{#1}{\psframebox{#2}}}
+\newcommand{\defnode}[2]{\framenode{#1}{{\Large $\scriptstyle #2$}}}
+\newcommand{\astputa}[1]{\naput{\Large $\scriptstyle #1$}}
+\newcommand{\astputb}[1]{\nbput{\Large $\scriptstyle #1$}}
+\newcommand{\para}[1]{\begin{tabular}{@{\hspace*{-0.2em}}c@{\hspace*{-0.2em}}}#1\end{tabular}}
+
+\setcounter{htmldepth}{2}
+
+%\htmladdress{\xlink{Bertrand Jeannet}{../../index.html}, \today}
+
+\title{Experiments on abstract acceleration of linear loops using Jordan normal forms}
+%\author{Bertrand Jeannet}
+%\date{October 25, 2006}
+\date{June 2012}
+%\xmlattributes{body}{bgcolor="#ffffe6"}
+
+
+\begin{document}
+
+%\xlink{Up}{../index.html}
+\maketitle
+
+\begin{center}
+\begin{gif}[][130][130]{seqn1}\boldmath
+  \vspace*{2ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=10ex,colsep=10em]
+    \ovalnode{linit}{linit} \\
+    \ovalnode{heat}{heat} \\
+    \ovalnode{noheat}{noheat}
+  \end{psmatrix}
+  \ncline{linit}{heat}\nbput{
+    \begin{array}{c}
+      T_e\seq 14 \wedge 16\sleq T\sleq 17 \; ?\;  \\
+      t := 0
+      \end{array}
+    }
+    \ncarc[arcangle=20]{heat}{noheat}\naput{t\sgeq 22 \; ?\;  t:=0}
+    \ncarc[arcangle=20]{noheat}{heat}\naput{t\sleq 18 \; ?\;  t:=0}
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{heat}{heat}
+    \naput{
+      x\sleq 22 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e + 1 \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{noheat}{noheat}
+    \naput{
+      x\sgeq 18 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e  \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    $
+    \hspace*{12em}~
+    \vspace*{2ex}
+
+\end{gif}
+\end{center}
+\begin{center}
+\begin{gif}[][130][130]{seqn2}\boldmath
+  \vspace*{2ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=10ex,colsep=10em]
+    \ovalnode{linit}{linit} \\
+    \ovalnode{heat}{heat} \\
+    \ovalnode{noheat}{noheat}
+  \end{psmatrix}
+  \ncline{linit}{heat}\nbput{
+    \begin{array}{c}
+      T_e\seq 14 \wedge 16\sleq T\sleq 17 \; ?\;  \\
+      t := 0
+      \end{array}
+    }
+    \ncarc[arcangle=20]{heat}{noheat}\naput{t\sgeq 22 \; ?\;  t:=0}
+    \ncarc[arcangle=20]{noheat}{heat}\naput{t\sleq 18 \; ?\;  t:=0}
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{heat}{heat}
+    \naput{
+      x\sleq 22 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e + 1 \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{noheat}{noheat}
+    \naput{
+      x\sgeq 18 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e  \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    $
+    \hspace*{12em}~
+    \vspace*{2ex}
+
+\end{gif}
+\end{center}
+\begin{center}
+\begin{gif}[][130][130]{seqn3}\boldmath
+  \vspace*{2ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=10ex,colsep=10em]
+    \ovalnode{linit}{linit} \\
+    \ovalnode{heat}{heat} \\
+    \ovalnode{noheat}{noheat}
+  \end{psmatrix}
+  \ncline{linit}{heat}\nbput{
+    \begin{array}{c}
+      T_e\seq 14 \wedge 16\sleq T\sleq 17 \; ?\;  \\
+      t := 0
+      \end{array}
+    }
+    \ncarc[arcangle=20]{heat}{noheat}\naput{t\sgeq 22 \; ?\;  t:=0}
+    \ncarc[arcangle=20]{noheat}{heat}\naput{t\sleq 18 \; ?\;  t:=0}
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{heat}{heat}
+    \naput{
+      x\sleq 22 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e + 1 \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{noheat}{noheat}
+    \naput{
+      x\sgeq 18 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e  \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    $
+    \hspace*{12em}~
+    \vspace*{2ex}
+
+\end{gif}
+\end{center}
+
+%******************************************************************************
+\section{Introduction}
+\label{sec:intro}
+%******************************************************************************
+
+\xlink{Research report with appendix}{mainappendix.pdf}
+
+
+%******************************************************************************
+\section{Thermostat experiment}
+\label{sec:thermostat}
+%******************************************************************************
+
+%==============================================================================
+\subsection{The model}
+%==============================================================================
+
+We start from the following differential linear hybrid automaton.
+
+\begin{center}
+\begin{gif}[][130][130]{eqn1}\boldmath
+  \vspace*{2ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=10ex,colsep=10em]
+    \pnode{linit} \\
+    \ovalnode{heat}{\dot{T}=1-\frac{1}{16}(T-T_e)} \\
+    \ovalnode{noheat}{\dot{T}=-\frac{1}{16}(T-T_e)}
+  \end{psmatrix}
+  \ncline{linit}{heat}\nbput{
+    \begin{array}{c}
+      T_e\seq 14 \wedge 16\sleq T\sleq 17 \; ?\;  \\
+      t := 0
+      \end{array}
+    }
+    \ncarc[arcangle=20]{heat}{noheat}\naput{t\sgeq 22 \; ?\;  t:=0}
+    \ncarc[arcangle=20]{noheat}{heat}\naput{t\sleq 18 \; ?\;  t:=0}
+    $
+    \vspace*{2ex}
+
+\end{gif}
+\end{center}
+The variables are the room temperature ($T$), the external
+temperature ($T_e$) and the time clock ($t$). The upper location
+corresponds to the heating mode, the lower one to the cooling
+mode.  The goal is to maintain the room temperature around $20$
+degrees. If this temperature is less than $18$, the heating is
+switched on. If it exceeds $22$, heating is switched off (there is
+an hysteresis).
+
+This small system is first (very naively) discretized using a sampling time of 1 second.
+\begin{center}
+\begin{gif}[][130][130]{eqn2}\boldmath
+  \vspace*{2ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=10ex,colsep=10em]
+    \ovalnode{linit}{linit} \\
+    \ovalnode{heat}{heat} \\
+    \ovalnode{noheat}{noheat}
+  \end{psmatrix}
+  \ncline{linit}{heat}\nbput{
+    \begin{array}{c}
+      T_e\seq 14 \wedge 16\sleq T\sleq 17 \; ?\;  \\
+      t := 0
+      \end{array}
+    }
+    \ncarc[arcangle=20]{heat}{noheat}\naput{t\sgeq 22 \; ?\;  t:=0}
+    \ncarc[arcangle=20]{noheat}{heat}\naput{t\sleq 18 \; ?\;  t:=0}
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{heat}{heat}
+    \naput{
+      x\sleq 22 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e + 1 \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    \nccurve[angleA=30,angleB=-30,ncurv=4]{noheat}{noheat}
+    \naput{
+      x\sgeq 18 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	T' &:=& \frac{15}{16} T - \frac{1}{16} T_e  \\
+	t' &:=& t+1
+      \end{array}
+      \right.
+    }
+    $
+    \hspace*{12em}~
+    \vspace*{2ex}
+
+\end{gif}
+\end{center}
+and then transformed for acceleration:
+\begin{center}
+\begin{gif}[][120][120]{eqn3}\boldmath
+  \vspace*{2ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=10ex,colsep=2.5em]
+    \ovalnode{linit}{linit} \\
+    \ovalnode{heat}{heat\_start} &&& \ovalnode{heata}{heat} & \ovalnode{heatb}{heate} \\
+    \ovalnode{noheatb}{noheate} & \ovalnode{noheata}{noheat} &&& \ovalnode{noheat}{noheat\_start}
+  \end{psmatrix}
+  \ncline{linit}{heat}\nbput{
+    \begin{array}{c}
+      T_e\seq 14 \wedge 16\sleq T\sleq 17 \; ?\;  \\
+      t := 0
+    \end{array}
+  }
+  \ncline{heat}{heata}\naput{
+    \left(
+      x\sleq 22 \; ?\; \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  T' &:=& \frac{15}{16} T - \frac{1}{16} T_e + 1 \\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{heata}{heatb}\naput{t\sgeq 22\; ?}
+  \ncline{heatb}{noheat}\naput{t := 0}
+  \ncline{noheat}{noheata}\naput{
+    \left(
+      x\sgeq 18 \; ?\; \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  T' &:=& \frac{15}{16} T - \frac{1}{16} T_e \\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{noheata}{noheatb}\naput{t\sleq 18\; ?}
+  \ncline{noheatb}{heat}\naput{t := 0}
+  $
+  \vspace*{5ex}
+
+\end{gif}
+\end{center}
+
+The corresponding input model of our prototype is
+\xlink{thermostat.lts}{thermostat.lts} In it, the keyword
+``jordan'' give the decomposition of the assignement $M$ into
+$S^{-1}JS$ where $J$ is the real Jordan form of $M$. The last,
+fourth dimension corresponds to the added variable $\xi$ always
+equal to 1.
+
+%==============================================================================
+\subsection{The analysis}
+%==============================================================================
+
+We type the command
+\begin{prog}
+jordan.byte -debug 1 -print box -dot thermostat1.dot -log 1 thermostat.lts &&
+dot -Tps thermostat1.dot >thermostat1.ps
+\end{prog}
+where the ``-log l'' option indicates that when abstracting
+matrices with template polyhedra, we consider the set of template
+expressions of the form
+\begin{center}
+\begin{gif}[][130][130]{eqn4}\boldmath
+$\alpha x_i +/- (1-\alpha) x_j$
+with
+$
+\alpha\in\{ \frac{k}{2^\ell} \;|\; 0\leq k\leq 2^\ell \}
+$
+\end{gif}
+\end{center}
+If $d$ is the
+number of different coefficients of the set of matrices to
+abstract, this generates $d(d-1)(2^l-1) + d$ template
+expressions to be lower and upper bounded.
+
+The other options are related to the output.
+
+The result can be viewed at the last page of the
+\xlink{thermostat1.ps}{thermostat1.ps} file.
+
+Some observations:
+\begin{itemize}
+\item In each location is displayed the computed invariant, under
+  the form of a set of constraints, followed by the bounding box
+  of the corresponding polyhedron.
+
+\item Looking at location ``heat1'', one observes that
+  temperature $T in [16,22.5]$ in heating mode, and looking at location
+  ``noheat1'', one observes that $T in [17.75,22.5]$ in cooling
+  mode.
+
+\item Looking at location ``heat2'', the analysis infers that the
+  system spents \emph{at least}  $1.18$ and \emph{at most} $9.98$ consecutive seconds in the
+  heating mode, whereas looking at location ``noheat2'', the
+  analysis infers that the system spents  \emph{at least} $1.41$
+  and \emph{at most} $12.99$
+  consecutive seconds in this mode.
+
+  The non-zero lower bounds indicates that the hysteresis works:
+  the system mode is not switched infinitely often in a finite time.
+\end{itemize}
+
+It is instructive to see how these significant numbers are
+improved if one increases the precision with the ``-log l''
+option. The following table synthesizes our experiments.
+
+\begin{center}
+\begin{tabular}{|c|c|cc|cc|cc|}
+\hline
+l & \#e & \multicolumn{2}{c|}{heating mode} &
+\multicolumn{2}{c|}{cooling mode} & running time & file \\
+&& T & time & T & time && \\ \hline
+1 & 4 & $[16,22.5]$ & $[1.19,9.99]$ & $[17.75,22.5]$ & $[1.41,12.99]$
+& & \xlink{thermostat1.ps}{thermostat1.ps} \\
+2 & 8 & $[16,22.5]$ & $[1.78,9.96]$ & $[17.75,22.5]$ & $[2.35,12.97]$
+& & \xlink{thermostat2.ps}{thermostat2.ps} \\
+3 & 16& $[16,22.5]$ & $[2.96,9.92]$ & $[17.75,22.5]$ & $[4.24,12.93]$
+& & \xlink{thermostat3.ps}{thermostat3.ps} \\
+4 & 32& $[16,22.5]$ & $[5.33,9.82]$ & $[17.75,22.5]$ & $[8.00,12.86]$
+& & \xlink{thermostat4.ps}{thermostat4.ps} \\
+5 & 64& $[16,22.5]$ & $[5.33,9.82]$ & $[17.75,22.5]$ & $[10.71,12.86]$
+& & \xlink{thermostat5.ps}{thermostat5.ps} \\
+6 & 128& $[16,22.5]$ & $[6.25,9.76]$ & $[17.75,22.5]$ & $[10.71,12.80]$
+& & \xlink{thermostat6.ps}{thermostat6.ps} \\
+8 & 512& $[16,22.5]$ & $[6.28,9.76]$ & $[17.75,22.5]$ & $[10.72,12.79]$
+& & \xlink{thermostat8.ps}{thermostat8.ps} \\
+\hline
+\end{tabular}
+
+\begin{tabular}{lll}
+  l &:& corresponds to ``-log l'' option \\
+  \#e & : & number of template expressions on the coefficients of
+  Jordan normal form \\
+  && (related to the number ``l'' and the number of
+different coefficient of the Jordan normal form) \\
+T &:& regulated temperature \\
+time &:& time spent in each mode
+\end{tabular}
+
+\end{center}
+
+The temperature intervals do not change, but the lower bound for
+time improves a lot up to $l=4$, and slightly afterwards.
+
+In the sequel, in the Postscript files we display only the
+bounding boxed of the inferred polyhedra (used option ``-print box''
+instead of ``-print boxpoly'').
+
+%******************************************************************************
+\section{Parabola, cubic and exponential behaviours}
+\label{sec:parabola}
+%******************************************************************************
+
+\subsection{Parabola}
+
+We study an integrator put under different initial conditions and
+guards, formalized by the following automaton:
+\begin{center}
+\begin{gif}[][130][130]{eqnpara1}\boldmath
+  \vspace*{10ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=12ex,colsep=4em]
+    &&& \ovalnode{para}{para} & \ovalnode{parae}{parae} \\
+    \ovalnode{linit}{linit} &&& \ovalnode{paray}{paray} & \ovalnode{paraye}{paraye} \\
+    \ovalnode{l}{l} &&& \ovalnode{parax}{parax} & \ovalnode{paraxe}{paraxe} \\
+    &&& \ovalnode{paraxy}{paraxy} & \ovalnode{paraxye}{paraxye} \\
+    &&& \ovalnode{paraxyy}{paraxyy} & \ovalnode{paraxyye}{paraxyye}
+  \end{psmatrix}
+  \ncline{linit}{l}\nbput{
+    \begin{array}{c}
+    x\seq 0\wedge y\seq 0 \; ?\\
+    t := 0
+  \end{array}
+  }
+  \nccurve[angleA=80,angleB=-180,ncurvB=1.3]{l}{para}\naput[npos=0.85]{
+    \left(
+      \mathsf{true} \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{para}{parae}\naput{\mathsf{true}\; ?}
+  \nccurve[angleA=80,angleB=-180,ncurvB=1.3]{l}{paray}\naput[npos=0.8]{
+    \left(
+      y\sleq 7 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{paray}{paraye}\naput{y\sgeq 8\; ?}
+  \nccurve[angleA=0,angleB=-180,ncurvB=1.3]{l}{parax}\naput[npos=0.75]{
+    \left(
+      x\sleq 30 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{parax}{paraxe}\naput{x\sgeq 31\; ?}
+  \nccurve[angleA=-80,angleB=-180,ncurvB=1.3]{l}{paraxy}\naput[npos=0.8]{
+    \left(
+      x\sadd y\sleq 30 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{paraxy}{paraxye}\naput{x\sadd y\sgeq 31\; ?}
+  \nccurve[angleA=-80,angleB=-180,ncurvB=1.3]{l}{paraxyy}\naput[npos=0.85]{
+    \left(
+      x\ssub 2y\sleq 30 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{paraxyy}{paraxyye}\naput{x\ssub 2y\sgeq 31\; ?}
+  $
+  \vspace*{5ex}
+
+\end{gif}
+\end{center}
+The trajectories are of the form ``x = y*y + a*y + b''.
+%
+The purpose of the different guards is to demonstrate the ability
+of the technique to perform non-linear deductions.
+
+
+\begin{itemize}
+\item The analysis results of \xlink{parabola\_i0.lts}{parabola\_i0.lts} can be seen here.
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+1 & 4 & & \xlink{parabola\_i0\_l1.ps}{parabola\_i0\_l1.ps} \\
+2 & 8 & & \xlink{parabola\_i0\_l2.ps}{parabola\_i0\_l2.ps} \\
+4 & 32 & & \xlink{parabola\_i0\_l4.ps}{parabola\_i0\_l4.ps} \\
+\hline
+\end{tabular}
+
+\begin{tabular}{lll}
+  l &:& corresponds to ``-log l'' option \\
+  \#e & : & number of template expressions on the coefficients of
+  Jordan normal form \\
+  && (related to the number ``l'' and the number of
+different coefficient of the Jordan normal form)
+\end{tabular}
+\end{center}
+
+\item If we replace the initial condition with ``0 <= x <= 2'' and
+  ``0 <= y <= 2'',
+we obtain these results:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+1 & 4 & & \xlink{parabola\_i1\_l1.ps}{parabola\_i1\_l1.ps} \\
+2 & 8 & & \xlink{parabola\_i1\_l2.ps}{parabola\_i1\_l2.ps} \\
+4 & 32 & & \xlink{parabola\_i1\_l4.ps}{parabola\_i1\_l4.ps} \\
+\hline
+\end{tabular}
+\end{center}
+
+\item If we replace the initial condition with ``-2 <= x <= 2'' and
+  ``0-2 <= y <= 2'',
+we obtain these results:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+1 & 4 & & \xlink{parabola\_i2\_l1.ps}{parabola\_i2\_l1.ps} \\
+2 & 8 & & \xlink{parabola\_i2\_l2.ps}{parabola\_i2\_l2.ps} \\
+4 & 32 & & \xlink{parabola\_i2\_l4.ps}{parabola\_i2\_l4.ps} \\
+\hline
+\end{tabular}
+\end{center}
+\end{itemize}
+
+\subsection{Cubic behaviour}
+
+Let add now a variable, in order to get a cubic behaviour.
+\begin{center}
+\begin{gif}[][130][130]{eqncubic1}\boldmath
+  \vspace*{12ex}
+
+  \color{black}
+  \hspace*{8em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=12ex,colsep=4em]
+    &&& \ovalnode{cubic}{cubic} & \ovalnode{cubice}{cubice} \\
+    \ovalnode{linit}{linit} &&& \ovalnode{cubicy}{cubicy} & \ovalnode{cubicye}{cubicye} \\
+    \ovalnode{l}{l} &&& \ovalnode{cubicx}{cubicx} & \ovalnode{cubicxe}{cubicxe} \\
+    &&& \ovalnode{cubicxy}{cubicxy} & \ovalnode{cubicxye}{cubicxye} \\
+    &&& \ovalnode{cubicxyy}{cubicxyy} & \ovalnode{cubicxyye}{cubicxyye}
+  \end{psmatrix}
+  \ncline{linit}{l}\nbput{
+    \begin{array}{c}
+    x\seq 0\wedge y\seq 0 \wedge z\seq 0\; ?\\
+    t := 0
+  \end{array}
+  }
+  \nccurve[angleA=80,angleB=-180,ncurvB=1.3]{l}{cubic}\naput[npos=0.85]{
+    \left(
+      \mathsf{true} \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+z\\
+	  z' &:=& z+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{cubic}{cubice}\naput{\mathsf{true}\; ?}
+  \nccurve[angleA=80,angleB=-180,ncurvB=1.3]{l}{cubicy}\naput[npos=0.8]{
+    \left(
+      y\sleq 7 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+z\\
+	  z' &:=& z+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{cubicy}{cubicye}\naput{y\sgeq 8\; ?}
+  \nccurve[angleA=0,angleB=-180,ncurvB=1.3]{l}{cubicx}\naput[npos=0.75]{
+    \left(
+      x\sleq 30 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+z\\
+	  z' &:=& z+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{cubicx}{cubicxe}\naput{x\sgeq 31\; ?}
+  \nccurve[angleA=-80,angleB=-180,ncurvB=1.3]{l}{cubicxy}\naput[npos=0.8]{
+    \left(
+      x\sadd y\sleq 30 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+z\\
+	  z' &:=& z+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{cubicxy}{cubicxye}\naput{x\sadd y\sgeq 31\; ?}
+  \nccurve[angleA=-80,angleB=-180,ncurvB=1.3]{l}{cubicxyy}\naput[npos=0.85]{
+    \left(
+      x\ssub 2y\sleq 30 \; ? \left\{
+	\begin{array}{@{}c@{\,}c@{\,}l@{}}
+	  x' &:=& x+y\\
+	  y' &:=& y+z\\
+	  z' &:=& z+1\\
+	  t' &:=& t+1
+	\end{array}
+      \right.
+    \right)^*
+  }
+  \ncline{cubicxyy}{cubicxyye}\naput{x\ssub 2y\sgeq 31\; ?}
+  $
+  \vspace*{5ex}
+
+\end{gif}
+\end{center}
+The trajectories are now of the form ``x=z*z*z + a*z*z + b*z+c''
+and ``y=z*z + d*z + e''.
+
+\begin{itemize}
+\item The analysis results  of \xlink{cubic\_i0.lts}{cubic\_i0.lts} can be seen here.
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+1 & 9 & & \xlink{cubic\_i0\_l1.ps}{cubic\_i0\_l1.ps} \\
+2 & 27 & & \xlink{cubic\_i0\_l2.ps}{cubic\_i0\_l2.ps} \\
+4 & 93 & & \xlink{cubic\_i0\_l4.ps}{cubic\_i0\_l4.ps} \\
+\hline
+\end{tabular}
+\end{center}
+
+\item If we replace the initial condition with
+``0 <= x <= 2'' and ``0 <= y <= 2'' and ``0 <= z <= 2'',
+we obtain these results:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+1 & 9 & & \xlink{cubic\_i1\_l1.ps}{cubic\_i1\_l1.ps} \\
+2 & 27 & & \xlink{cubic\_i1\_l2.ps}{cubic\_i1\_l2.ps} \\
+4 & 93 & & \xlink{cubic\_i1\_l4.ps}{cubic\_i1\_l4.ps} \\
+\hline
+\end{tabular}
+\end{center}
+
+\item If we replace the initial condition with
+``-2 <= x <= 2'' and ``-2 <= y <= 2'' and ``-2 <= z <= 2'',
+we obtain these results:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+1 & 9 & & \xlink{cubic\_i2\_l1.ps}{cubic\_i2\_l1.ps} \\
+2 & 27 & & \xlink{cubic\_i2\_l2.ps}{cubic\_i2\_l2.ps} \\
+4 & 93 & & \xlink{cubic\_i2\_l4.ps}{cubic\_i2\_l4.ps} \\
+\hline
+\end{tabular}
+\end{center}
+\end{itemize}
+
+\subsection{Exponential behaviour}
+We also analyse the example \xlink{exp\_div.lts}{exp\_div.lts}:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+1 & 4 & & \xlink{exp\_div\_l1.ps}{exp\_div\_l1.ps} \\
+2 & 8 & & \xlink{exp\_div\_l2.ps}{exp\_div\_l2.ps} \\
+3 & 16 & & \xlink{exp\_div\_l3.ps}{exp\_div\_l3.ps} \\
+\hline
+\end{tabular}
+\end{center}
+
+%******************************************************************************
+\section{Damped oscillator}
+\label{sec:oscillator}
+%******************************************************************************
+
+We consider a damped oscillator (a pendulum in the linear approximation), ruled by the differential
+equation
+
+\begin{gif}[][130][130]{eqn5}\boldmath
+$\ddot{\theta} + 2k\dot{\theta} + \omega_0^2\theta=0$
+where $2k$ is the damping factor and $\omega_0$ the pulsation when $k=0$.
+
+If $k<\omega_0$, the solution is of the form
+$\theta(t)=\theta_0 e^{-kt}cos(\omega t+\varphi)$ with
+$\omega=\sqrt{\omega_0^2-k^2}$.
+
+If $k=\omega_0$, the solution is of the form $\theta(t)=(\theta_0
++theta_0' t) e^{-kt}$.
+
+If $k>\omega_0$, the solution is of the form
+$\theta(t)=\mu_1 e^{(-k-\sqrt{k^2-\omega^2})t} + \mu_2 e^{(-k+\sqrt{k^2-\omega^2})t}$
+\end{gif}
+
+\par
+
+We naively discretized this equation (using a sampling time of
+one second) with
+\begin{center}
+\begin{gif}[][130][130]{eqn6}\boldmath
+$
+\begin{array}{rcl}
+\theta_p' &=& \theta_p + \theta_v \\
+\theta_v' &=& -\omega^2\theta_p + (1-2k) \theta_v
+\end{array}
+$
+\end{gif}
+\end{center}
+Choosing $\omega=1/8$ and various values for $k$, and
+choosing initial condition $\theta_p=8$ and $\theta_v=0$, we have
+the following system \xlink{oscillator\_i0.lts}{oscillator\_i0.lts}.
+
+\begin{itemize}
+\item The analysis results can be seen here.
+\begin{center}
+\begin{tabular}{|c|c|cc|cc|cc|cc|cc|cc|c|c|}
+\hline
+l & \#e & \multicolumn{2}{|c}{$k=3/4$} &
+\multicolumn{2}{|c}{$k=1/4$} & \multicolumn{2}{|c}{$k=1/8$} &
+\multicolumn{2}{|c}{$k=1/16$} & \multicolumn{2}{|c}{$k=1/64$} &
+\multicolumn{2}{|c}{$k=0$} &
+running time & file \\
+&&
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$
+\\ \hline
+1 & 4 &
+$[0,8.0]$ & $[-0.125,0]$ &
+$[0,8.264]$ & $[-0.248,0]$ &
+$[0,10.217]$ & $[-0.402,0]$ &
+$[-1.818,8.262]$ & $[-0.625,0.128]$ &
+$[-6.580,8]$ & $[-0.956,0.785]$ &
+$[-\infty,\infty]$ & $[-\infty,\infty]$
+& & \xlink{oscillator\_i0\_l1.ps}{oscillator\_i0\_l1.ps} \\
+2 & 8 &
+$[0,8.0]$ & $[-0.125,0]$ &
+$[0,8.184]$ & $[-0.233,0]$ &
+$[0,9.286]$ & $[-0.394,0]$ &
+$[-1.680,8.090]$ & $[-0.600,0.123]$ &
+$[-6.580,8]$ & $[-0.924,0.760]$ &
+$[-\infty,\infty]$ & $[-\infty,\infty]$
+& & \xlink{oscillator\_i0\_l2.ps}{oscillator\_i0\_l2.ps} \\
+4 & 32&
+$[0,8.0]$ & $[-0.125,0]$ &
+$[0,8.0]$ & $[-0.231,0]$ &
+$[0,8.08]$ & $[-0.393,0]$ &
+$[-1.648,8.0]$ & $[-0.592,0.122]$ &
+$[-6.580,8]$ & $[-0.915,0.751]$ &
+$[-\infty,\infty]$ & $[-\infty,\infty]$
+& & \xlink{oscillator\_i0\_l4.ps}{oscillator\_i0\_l4.ps} \\
+\hline
+\end{tabular}
+
+\begin{tabular}{lll}
+  l &:& corresponds to ``-log l'' option \\
+  \#e & : & number of template expressions on the coefficients of
+  Jordan normal form \\
+  && (related to the number ``l'' and the number of
+different coefficient of the Jordan normal form) \\
+  k &:& damping factor \\
+  $theta_p$ &:& minimum and maximum angular position in discrete
+  trajectories
+  \\
+  $theta_v$ &:& minimum and maximum angular speed in discrete
+  trajectories
+\end{tabular}
+\end{center}
+
+\item If we now choose the initial condition $\theta_p=8$ and
+$\theta_v=8$, we have these results:
+\begin{center}
+\begin{tabular}{|c|c|cc|cc|cc|cc|cc|cc|c|c|}
+\hline
+l & \#e & \multicolumn{2}{|c}{$k=3/4$} &
+\multicolumn{2}{|c}{$k=1/4$} & \multicolumn{2}{|c}{$k=1/8$} &
+\multicolumn{2}{|c}{$k=1/16$} & \multicolumn{2}{|c}{$k=1/64$} &
+\multicolumn{2}{|c}{$k=0$} &
+running time & file \\
+&&
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$ &
+$\theta_p$ & $\theta_v$
+\\ \hline
+4 & 32&
+$[0,16.0]$ & $[-4.125,8]$ &
+$[0,16.099]$ & $[-0.25,8]$ &
+$[0,31.416]$ & $[-1.560,8]$ &
+$[-8.742,42.555]$ & $[-3.144,8]$ &
+$[-49.598,60.421]$ & $[-6.901,8]$ &
+$[-\infty,\infty]$ & $[-\infty,\infty]$
+& & \xlink{oscillator\_i1\_l4.ps}{oscillator\_i1\_l4.ps} \\
+\hline
+\end{tabular}
+\end{center}
+\end{itemize}
+
+Some comments:
+\begin{itemize}
+\item If $k=0$, the discretized version diverges. Indeed the
+  Jordan matrix have an eigenvalue with a norm strictly greater
+  than 1.
+\item When $k$ is larger, the oscillations become smaller both in
+  magnitude and maximal speed.
+\item When the initial speed is zero, the analysis discovers that when
+  $k>\omega$, the position cannot be negative.
+\end{itemize}
+
+%******************************************************************************
+\section{Inverted pendulum}
+\label{sec:invpendulum}
+%******************************************************************************
+
+We consider an inverted pendulum
+\xlink{inv\_pendulum.lts}{inv\_pendulum.lts} together with its PID
+controller. The variables are ``pos'': position of the mobile,
+``speed'': its speed, ``ang'': angle of the pendulum (in degrees),
+and ``angDer'': angular speed (in degrees per sec). The initial
+condition is ``-1 <= ang <= 1'' and ``pos=speed=angDer=0''.
+
+The analysis shows that the controller ensures the stability of
+the system and delivers lower and upper bounds on the different
+quantities (internally it uses convex polyhedra to relate them).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+l & \#e & running time & file \\
+0 & 4 & & \xlink{inv\_pendulum\_l0.ps}{inv\_pendulum\_l0.ps} \\
+1 & 16 & & \xlink{inv\_pendulum\_l1.ps}{inv\_pendulum\_l1.ps} \\
+2 & 40 & & \xlink{inv\_pendulum\_l2.ps}{inv\_pendulum\_l2.ps} \\
+3 & 88 & & \xlink{inv\_pendulum\_l3.ps}{inv\_pendulum\_l3.ps} \\
+4 & 188 & & \xlink{inv\_pendulum\_l4.ps}{inv\_pendulum\_l4.ps} \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+%******************************************************************************
+\section{Damped oscillator with two modes}
+\label{sec:hoscillator}
+%******************************************************************************
+
+We saw that the (naive) discretized version of the undamped
+oscillator diverges. We now consider an oscillator where only the
+central part is damped:
+\begin{center}\tiny
+\begin{gif}[][160][160]{eqn7}\boldmath
+  \vspace*{2ex}
+
+  \color{black}
+  \hspace*{12em}
+  $
+  \psset{arrows=->}
+  \begin{psmatrix}[mnode=none,rowsep=10ex,colsep=3.5em]
+    &\ovalnode{linit}{linit} \\
+    &\ovalnode{freep}{freep} \\
+    \ovalnode{dampedp}{dampedp} && \ovalnode{dampedn}{dampedn} \\
+    & \ovalnode{freen}{freen}
+  \end{psmatrix}
+  \ncline{linit}{freep}\nbput{
+    \begin{array}{c}
+      \theta_p=10 \wedge \theta_v=0 \; ?\; \\
+    \end{array}
+  }
+  \ncarc[arcangle=-15]{freep}{dampedp}\nbput[npos=0.35,labelsep=0pt]{\theta_p\sleq 4 \; ?}
+  \ncarc[arcangle=-15]{dampedp}{freep}\nbput[npos=0.35,labelsep=0pt]{\theta_p\sgeq 4 \; ?}
+  \ncarc[arcangle=15]{dampedn}{freep}\naput[npos=0.35,labelsep=0pt]{\theta_p\sgeq 4 \; ?}
+  \ncarc[arcangle=-15]{dampedp}{freen}\nbput[npos=0.35,labelsep=0pt]{\theta_p\sleq -4 \; ?}
+  \ncarc[arcangle=15]{freen}{dampedn}\naput[npos=0.35,labelsep=0pt]{\theta_p\sgeq -4 \; ?}
+  \ncarc[arcangle=15]{dampedn}{freen}\naput[npos=0.35,labelsep=0pt]{\theta_p\sleq -4 \; ?}
+  \nccurve[angleA=30,angleB=-30,ncurv=4]{freep}{freep}
+  \naput{
+    \theta_p\sgeq 4 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	\theta_p' &:=& \theta_p+\theta_v \\
+	\theta_v' &:=& -\omega^2\theta_p+\theta_v
+      \end{array}
+    \right.
+  }
+  \nccurve[angleA=150,angleB=-150,ncurv=4]{dampedp}{dampedp}
+  \nbput{
+    -4\sleq \theta_p\sleq 4 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	\theta_p' &:=& \theta_p+\theta_v \\
+	\theta_v' &:=& -\omega^2\theta_p+(1-2k)\theta_v
+      \end{array}
+    \right.
+  }
+  \nccurve[angleA=30,angleB=-30,ncurv=4]{dampedn}{dampedn}
+  \naput{
+    -4\sleq \theta_p\sleq 4 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	\theta_p' &:=& \theta_p+\theta_v \\
+	\theta_v' &:=& -\omega^2\theta_p+(1-2k)\theta_v
+      \end{array}
+    \right.
+  }
+  \nccurve[angleA=30,angleB=-30,ncurv=4]{freen}{freen}
+  \naput{
+    \theta_p\sleq -4 \; ?\; \left\{
+      \begin{array}{@{}c@{\,}c@{\,}l@{}}
+	\theta_p' &:=& \theta_p+\theta_v \\
+	\theta_v' &:=& -\omega^2\theta_p+\theta_v
+      \end{array}
+      \right.
+    }
+    $
+    \hspace*{12em}~
+    \vspace*{2ex}
+
+\end{gif}
+\end{center}
+
+We still add to split the central mode into two modes (kind of
+trace partitioning) to prove that the behaviour is bounded,
+despite the two extremal modes being unstables.
+
+The actual source files are either
+\xlink{oscillation2\_16.lts}{oscillation2\_16.lts} ($k=1/16$) or
+\xlink{oscillation2\_32.lts}{oscillation2\_32.lts} ($k=1/32$).
+
+The results can be seen here (we apply widening only ath the 3rd
+iteration):
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+l & \#e & k & running time & file \\
+2 & 4 & 1/16 && \xlink{oscillation2\_16\_l2w3.ps}{oscillation2\_16\_l2w3.ps} \\
+3 & 8 & 1/16 && \xlink{oscillation2\_16\_l3w3.ps}{oscillation2\_16\_l3w3.ps} \\
+4 & 32 & 1/16 && \xlink{oscillation2\_16\_l4w3.ps}{oscillation2\_16\_l4w3.ps} \\
+2 & 4 & 1/32 && \xlink{oscillation2\_32\_l2w3.ps}{oscillation2\_32\_l2w3.ps} \\
+3 & 8 & 1/32 && \xlink{oscillation2\_32\_l3w3.ps}{oscillation2\_32\_l3w3.ps} \\
+4 & 32 & 1/32 && \xlink{oscillation2\_32\_l4w3.ps}{oscillation2\_32\_l4w3.ps} \\
+\hline
+\end{tabular}
+\end{center}
+
+We need $l\geq 3$ to prove global stability. Moreover, if it is
+the case and in the case $k=1/16$, we prove that the system cannot exit
+from location ``dampedn''.
+
+%******************************************************************************
+\section{Convoy Car example}
+\label{sec:convoyCar}
+%******************************************************************************
+
+\subsection{The example}
+In this example, there is leading car followed by one or two cars
+behind it, trying to maintain their position at 50m from each
+other.
+
+\begin{center}
+\begin{gif}[][130][130]{convoyeqn0}\boldmath
+  \vspace*{4ex}
+
+  \begin{psmatrix}[rowsep=1ex,colsep=6em,emnode=p,mnode=R]
+    & & & & \\
+    & \psframebox{car2} & \psframebox{car1} & \psframebox{car0} & \\
+    & & & &
+  \end{psmatrix}
+  \ncline{2,1}{2,2}
+  \ncline{2,2}{2,3}
+  \ncline{2,3}{2,4}
+  \ncline[arrows=->]{2,4}{2,5}
+  \ncline[arrows=<->]{1,2}{1,3}\naput{$\mathit{dp}_1$}
+  \ncline[arrows=<->]{1,3}{1,4}\naput{$\mathit{dp}_0$}
+  \nput{-90}{3,2}{$x_2=p_2$}
+  \nput{-90}{3,3}{$x_1=p_1$}
+  \nput{-90}{3,4}{$x_0=p_0$}
+  \vspace*{4ex}
+\end{gif}
+\end{center}
+
+The equations are:
+\begin{center}
+\begin{gif}[][130][130]{convoyeqn1}\boldmath
+$
+x_i'' = \lambda(x'_i-x'_{i+1}) + \lambda_2(x_i-x_{i+1}-50)
+$
+\end{gif}
+\end{center}
+for $i in [1,N-1]$, with $x''_i$, $x'_i$ and $x_i$ the
+acceleration, speed and position of vehicle $i$. $i=0$
+corresponds to the leading car, $N$ being the toal number of cars.
+
+To ease the analysis of the results, we reformulate the
+problems by considering the deltas of positions and speeds,
+$\mathit{dv}_i=x'_i-x'_{i+1}$ and $\mathit{dp}_i = x_i-x_{i+1}$.
+After discretization using the time step $\delta$,
+we have the following system:
+\begin{center}
+\begin{gif}[][130][130]{convoyeqn2}\boldmath
+$$
+\begin{array}{rlll}
+  1\leq i\leq N-1 : & a_i' &=& \lambda \mathit{dv}_i +
+  \lambda_2(\mathit{dp}_i - 50) \\
+  0\leq i\leq N-2 :& \mathit{da}_i' &=& a_i'-a_{i+1}' \\
+  0\leq i\leq N-2 :& \mathit{dv}_i' &=& \mathit{dv}_i +
+  \delta\cdot\mathit{da}_i \\
+  0\leq i\leq N-2 :& \mathit{dp}_i' &=& \mathit{dp}_i +
+  \delta\cdot\mathit{dv}_i +
+  \delta^2/2\cdot\mathit{da}_i \\
+  & v_{0}' &=& v_{0} + \delta\cdot a_{0} \\
+  \multicolumn{4}{l}{\textrm{we take the constants}} \\
+  & \lambda &=& 0.05 \\
+  & \lambda_2 &=& 0.05 \\
+  & \delta = 0.1
+\end{array}
+$$
+\end{gif}
+\end{center}
+The purpose of the analysis is to show that there is no collision,
+and to compute bounds on the relative positions and speeds of the
+cars.
+
+In experiments, we will use a constant acceleration for the
+leading car inside an interval, and we will constrain other
+initial values by intervals as well.
+
+\subsection{Structure of the real Jordan form}
+This example is interesting as the real Jordan form of the loop
+body has blocks associated to complex eigenvalues of size $N-1$,
+where $N$ is the number of cars.
+
+With a constant acceleraton for the leading car, for $N=2$ we have
+the real Jordan form
+\begin{center}
+\begin{gif}[][130][130]{convoyeqn3}\boldmath
+
+  $
+ \begin{pmatrix}
+    \begin{pmatrix}
+      0.997 & -0.022 \\
+      0.022 & 0.997
+    \end{pmatrix} & 0 & 0 & 0 \\
+    0 & \begin{pmatrix}0.0047\end{pmatrix} & 0 & 0\\
+    0&0&
+    \begin{pmatrix}
+      1 & 1 \\
+      0 & 1
+    \end{pmatrix} \\
+    0&0&0& \begin{pmatrix}1\end{pmatrix}
+  \end{pmatrix}
+  $
+\end{gif}
+\end{center}
+(the 6th dimension corresponds to the constant dimension added to
+model the affine transformation with a linear one).
+
+For $N=3$ we have
+the real Jordan form
+\begin{center}
+\begin{gif}[][130][130]{convoyeqn4}\boldmath
+  $
+  \begin{pmatrix}
+    \begin{pmatrix}
+      0.997 & -0.022 & 1 & 0 \\
+      0.022 & 0.997 & 0 & 1  \\
+      0 & 0 & 0.997 & -0.022  \\
+      0 & 0 & 0.022 & 0.997
+    \end{pmatrix} & 0 & 0 & 0\\
+    0 & \begin{pmatrix}
+      0.0047 & 1 \\
+      0 & 0.0047
+    \end{pmatrix} & 0 & 0 \\
+    0&0&
+    \begin{pmatrix}
+      1 & 1 \\
+      0 & 1
+    \end{pmatrix} \\
+    0&0&0& \begin{pmatrix}1\end{pmatrix}
+  \end{pmatrix}
+  $
+\end{gif}
+\end{center}
+
+In practice, this corresponds to the common experience that with
+such a control law, the farther is a car from the leading car, the
+larger will be its oscillations (in relative position and speed).
+
+\subsection{Analysis}
+
+\begin{center}
+\begin{gif}[][130][130]{convoyeqn5}\boldmath
+\begin{tabular}{|l|p{10em}|rrr|p{10em}|}
+\hline
+& initial condition & $\ell$ & \#e & running time & result \\ \hline
+2 cars &
+$a_0\in[0,1]$, $v_0\geq1$, $\mathit{dp}_0\in[45,55]$
+$\mathit{dv}_0\in[-1,1]$, $\mathit{da}_0\in[-0.128,0.128]$ &
+0 & 5 & 0.39 &
+$a_0 \in [0,1]$, $v_0\geq1$, $\mathit{dp}_0\in[38.9,93.1]$
+$\mathit{dv}_0\in[-4.69,5.78]$, $
+\mathit{da}_0\in[-1.21,1.434]$ \\
+-- & -- & 1 & 25 & 1.95 &
+$a_0\in[0,1]$, $v_0\geq1$, $\mathit{dp}_0\in[42.7,90.3]$
+$\mathit{dv}_0\in[-4.05,5.25]$, $\mathit{da}_0\in[-1.04,1.33]$ \\
+-- & -- & 2 & 65 & 10.35 &
+$a_0\in[0,1]$, $v_0\geq1$, $\mathit{dp}_0\in[43.3,89.0]$
+ $\mathit{dv}_0\in[-3.72,5.03]$, $\mathit{da}_0\in[-0.98,1.31]$ \\
+\hline
+3 cars &
+$a_0=0$, $v_0\geq1$, $\mathit{dp}_i\in[45,55]$
+$\mathit{dv}_i=0$, $\mathit{da}_i=0$ &
+0 & 8 & 19.9 &
+$a_0=0$, $v_0\geq1$, $\mathit{dp}_1\in[33.5,66.49]$, $\mathit{dp}_0\in[44.6,55.41]$,
+$\mathit{dv}_1\in[-4.05,4.05]$, $\mathit{dv}_0\in[-0.97,0.97]$,
+$\mathit{da}_1\in[-1.17,1.17]$, $\mathit{da}_0\in[-0.27,0.27]$ \\
+-- &
+$a_0=0$, $v_0\geq1$, $\mathit{dp}_i=50$
+$\mathit{dv}_i\in[-1,1]$, $\mathit{da}_i=0$ &
+0 & 8 & 41.7 &
+$a_0=0$, $v_0\geq1$, $\mathit{dp}_1\in[33.6,66.3]$, $\mathit{dp}_0\in[46.0,54.0]$,
+$\mathit{dv}_1\in[-3.61,3.61]$, $\mathit{dv}_0\in[-1.08,1.08]$,
+$\mathit{da}_1\in[-0.96,0.96]$, $\mathit{da}_0\in[-0.24,0.24]$ \\
+-- &
+$a_0=0$, $v_0\geq1$, $\mathit{dp}_i\in[45,55]$
+$\mathit{dv}_i\in[-1,1]$, $\mathit{da}_i=0$ &
+0 & 8 & 2134 &
+$a_0=0$, $v_0\geq1$, $\mathit{dp}_1\in[20.2,79.8]$, $\mathit{dp}_0\in[40.6,59.4]$,
+$\mathit{dv}_1\in[-6.50,6.50]$, $\mathit{dv}_0\in[-1.87,1.87]$,
+$\mathit{da}_1\in[-1.72,1.72]$, $\mathit{da}_0\in[-0.47,0.47]$ \\
+-- &
+$a_0=0.256$, $v_0\geq1$, $\mathit{dp}_i\in[45,55]$
+$\mathit{dv}_i\in[-1,1]$, $\mathit{da}_1=0$, $\mathit{da}_0=0.128$ &
+0 & 8 & 199.9 &
+$a_0=0.256$, $v_0\geq1$, $\mathit{dp}_1\in[15.7,92.7]$, $\mathit{dp}_0\in[40.2,66.1]$,
+$\mathit{dv}_1\in[-7.39,7.43]$, $\mathit{dv}_0\in[-2.52,2.88]$,
+$\mathit{da}_1\in[-2.05,1.94]$, $\mathit{da}_0\in[-0.58,0.70]$ \\
+\hline
+\end{tabular}
+\end{gif}
+\end{center}
+
+Some comments:
+\begin{itemize}
+\item We succeed to compute lower and upper bounds on the state
+  variables of system, for an initial condition which much more
+  general than a single point.
+\item Here the number of dimensions begins is higher, and we have
+  bounded rotating behavior. This generates ``ellipsoidal''
+  polyhedra with many constraints and generators, hence running
+  times are significanlty higher than in other examples.
+\item The good news is that even with the paramater ``l'' set to
+  zero (that is, we just compute lower and upper bounds on the
+  coefficients of integer powers of the Jordan normal form), we
+  still obtain interesting bound.
+\item As expected, the variations of relative position and speed of
+  car 0 are higher than those of car 1 (and car 2 for the 3-cars examples).
+\end{itemize}
+
+
+%******************************************************************************
+\section{All Experiments and Comparisons}
+\label{sec:all}
+%******************************************************************************
+
+\begin{tabular}{lclrccccc}
+name            & CFG         & type                     & nbvars
+& Kleene & Jordan vs Kleene & Kleene time & Jordan time &
+Ellipsoid applicable \\
+\xlink{parabola\_i1}{parabola\_i1.lts}& single loops & unstable with guard      & 3
+& 14/60  & +8, +17 & 0.014 & 0.007 & no \\
+\xlink{parabola\_i2}{parabola\_i2.lts}& single loops & unstable with guard      & 3
+& 24/60  & +18, +6 & 0.016 & 0.008 & no \\
+\xlink{cubic\_i1}{cubic\_i1.lts}& single loops & unstable with guard      & 4
+& 26/80  & +18, +26 & 0.077 & 0.013 & no \\
+\xlink{cubic\_i2}{cubic\_i2.lts}& single loops & unstable with guard      & 4
+& 46/80  & +38, +9, -2 & 0.086 & 0.012 & no \\
+\xlink{exp\_div}{exp\_div.lts}& single loops & unstable with guard      & 2
+& 6/24   & +2, +6, -1 & 0.007 & 0.004 & no \\
+\xlink{oscillator\_i0}{oscillator\_i0.lts}& single loop & both types without guard & 2
+& 27/28  & +23, +0, -1 & 0.013 & 0.004 & yes \\
+\xlink{oscillator\_i1}{oscillator\_i1.lts}& single loop & both types without guard & 2
+& 28/28  & +23, +0, -1 & 0.013 & 0.004 & yes \\
+\xlink{inv\_pendulum}{inv\_pendulum.lts}& single loop & stable without guard     & 4
+& 36/40 & +36,0 +0 & 0.538 & 0.009  & yes \\
+\xlink{thermostat}{thermostat.lts}& nested loops & stable with guard        & 3
+& 6/24 & +6, +1, -1 & 0.012 & 0.003 & no \\
+\xlink{oscillator2\_16}{oscillator2\_16.lts}& nested loops & stable and unstable with guard & 3
+& 39/48 & +39, +0 & 0.141 & 0.003 & no \\
+\xlink{oscillator2\_32}{oscillator2\_32.lts}& nested loops & stable and unstable with guard & 3
+& 39/48 & +39, +0 & 0.355 & 0.003 & no \\
+\end{tabular}
+
+We took templates of the form
+  \begin{center}
+    \begin{gif}[][130][130]{eqnexperi2}
+      $$
+      \alpha\,\epsilon_i m_i \sadd (1\ssub \alpha)\epsilon_j m_j \textrm{~with~}
+      \alpha\seq\frac{k}{2^l}, 0\sleq k\sleq 2^l,
+      \epsilon_i,\epsilon_j\in\{-1,1\}
+      $$
+   \end{gif}
+  \end{center}
+ where the $m$'s are the coefficients of the powers of the Jordan normal
+ form, and $l$ is a parameter, set to $l=2$ for most experiments,
+ except \textbf{oscillator2\_xx} that need $l=3$ to show finite
+ bounds everywhere, as well waiting from the 3rd iteration before
+ applying widening (needed because of the outer loop).
+
+About the numbers: we take the bounding boxes of the inferred
+polyhedra at each control point (except initial ones), and we
+measure the improvements on bounds.
+\begin{itemize}
+\item ``Kleene'': nb of infinite bounds / total nb of bounds;
+\item ``Jordan vs Kleene'': nb of bounds becoming finite, nb of
+  improved finite bounds [, nb of worse finite bounds] (can be
+  reduced to 0 by increasing $l$ to $3$ or $4$).
+\item ``Kleene time'' and ``Jordan time'': times in seconds.
+\end{itemize}
+
+About the examples:
+\begin{itemize}
+\item \textbf{parabola\_i1} and \textbf{parabola\_i2}: loops of the
+  type
+  \begin{quote}\tt
+    t=0; while (guard)\{ x=x+y; y=y+1; t=t+1; \}
+  \end{quote}
+  with
+  different formula for \texttt{guard}, presented in
+  \ref{sec:parabola}. Trajectories are discretized parabola.
+
+  \textbf{i1} refers to the initial set $x,y ~in~ [0,2]$, \textbf{i2}
+  to $x,y ~in~ [-2,2]$, which makes the evolution of \texttt{x}
+  non-monotonic.
+\item \textbf{cubic\_i1} and \textbf{cubic\_i2}: loops of the
+  type
+  \begin{quote}\tt
+    t=0; while (guard)\{ x=x+y; y=y+z; z=z+1; t=t+1; \}
+  \end{quote}
+  with
+  different formula for \texttt{guard}.
+
+  \textbf{i1} refers to the initial set $x,y,z ~in~[0,2]$, \textbf{i2}
+  to $x,y,z ~in~[-2,2]$, which makes the evolution of \texttt{x} and \texttt{y}
+  non-monotonic.
+\item \textbf{oscillator\_i0} and \textbf{oscillator\_i1}
+  implement the (naive) discretization of the
+  differential equation
+  \begin{center}
+    \begin{gif}[][130][130]{eqnexperi3}
+      $$
+      \ddot{\theta} + 2k\dot{\theta} + \omega^2
+      \theta=0
+      $$
+    \end{gif}
+  \end{center}
+  with $w=0.125$ and different values for $k$, presented in
+  \ref{sec:parabola}. Trajectories are inward (or outward int the
+  unstable case) spirals.
+
+  \textbf{i0} refers to the initial set
+  $\theta(0)=8, \mathrm{d}\theta/\mathrm{d}t(0)=0$, \textbf{i1}
+  to $\theta(0)=8, \mathrm{d}\theta/\mathrm{d}t(0)=8$.
+\item \textbf{inv\_pendulum} is a PID-controlled inverted
+  pendulum, with eigenvalues very close to 1.
+\item \textbf{thermostat} is the thermostat example discussed in
+  \ref{sec:thermostat}. Trajectories are successions of pieces of
+  exponentials.
+
+\item \textbf{oscillator2\_16} and \textbf{oscillator2\_32} are the
+  damped oscillator with three modes discussed in
+  \ref{sec:hoscillator}. \textbf{16} (resp. \textbf{32})
+  corresponds to a damping factor of $1/16$ (resp. $1/32$) of the
+  central part/mode.  Trajectories are successions of pieces of
+  inward/outward spirals.  In the case of \textbf{oscillator2\_16},
+  the damping is strong enough and the analysis precise enough to
+  show that the mobile point cannot pass a second time in the
+  central part/mode from a negative position.
+\end{itemize}
+
+If we now set the template parameter $l$ to $l=4$ for all
+examples, to give an idea of the improvement in precision
+w.r.t. standard analysis and the increase in runing times, we get
+the following table:
+
+\begin{tabular}{lclrccccc}
+name            & CFG         & type                     & nbvars
+& Kleene & Jordan vs Kleene & Kleene time & Jordan time &
+Ellipsoid applicable \\
+\xlink{parabola\_i1}{parabola\_i1.lts}& single loops & unstable with guard      & 3
+& 14/60  & +8, +19 & 0.020 & 0.007 & no \\
+\xlink{parabola\_i2}{parabola\_i2.lts}& single loops & unstable with guard      & 3
+& 24/60  & +18, +9 & 0.022 & 0.008 & no \\
+\xlink{cubic\_i1}{cubic\_i1.lts}& single loops & unstable with guard      & 4
+& 26/80  & +18, +26 & 0.258 & 0.013 & no \\
+\xlink{cubic\_i2}{cubic\_i2.lts}& single loops & unstable with guard      & 4
+& 46/80  & +38, +11 & 0.524 & 0.012 & no \\
+\xlink{exp\_div}{exp\_div.lts}& single loops & unstable with guard      & 2
+& 6/24   & +2, +7 & 0.010 & 0.004 & no \\
+\xlink{oscillator\_i0}{oscillator\_i0.lts}& single loop & both types without guard & 2
+& 27/28  & +23, +0, -1 & 0.033 & 0.004 & yes \\
+\xlink{oscillator\_i1}{oscillator\_i1.lts}& single loop & both types without guard & 2
+& 28/28  & +24, +0 & 0.033 & 0.004 & yes \\
+\xlink{inv\_pendulum}{inv\_pendulum.lts}& single loop & stable without guard     & 4
+& 36/40 & +36,+0 & 96.229 & 0.012 & yes \\
+\xlink{thermostat}{thermostat.lts}& nested loops & stable with guard        & 3
+& 6/24 & +6, +1, -1 & 0.017 & 0.003 & no \\
+\xlink{oscillator2\_16}{oscillator2\_16.lts}& nested loops & stable and unstable with guard & 3
+& 39/48 & +39, +0 & 0.300 & 0.003 & no \\
+\xlink{oscillator2\_32}{oscillator2\_32.lts}& nested loops & stable and unstable with guard & 3
+& 39/48 & +39, +0 & 0.706 & 0.003 & no \\
+\end{tabular}
+The increase in running time become moderate in general, less than the
+worst-case if one look to the increase of the number of template
+constraints. The exception is the inverted pendulum example.
+
+
+
+
+\end{document}

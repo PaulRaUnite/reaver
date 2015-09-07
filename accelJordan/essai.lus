@@ -1,0 +1,96 @@
+const lambda = 0.5;
+const lambda2 = 0.25;
+const delta = 0.1;
+const x0=50.0;
+
+node tand(const n:int; tb:bool^n) returns (res:bool)
+var tres:bool^(n+1);
+let
+	tres[0]=true;
+	tres[1..n]=tres[0..n-1] and tb;
+	res = tres[n];
+tel
+
+node cars(const n:int; change,pos:bool)
+returns (ok:bool; a,v,p:real^n; diff:real^(n-1))
+var p0:real^n;
+    tok:bool^(n-1);
+    pok:bool;
+let
+	a[0..n-2] = 0.0^(n-1) -> lambda^(n-1)*((pre v[1..n-1])-(pre v[0..n-2])) + lambda2^(n-1)*((pre p[1..n-1])-(pre p[0..n-2]));
+	a[n-1] = 0.0 -> (pre a[n-1]) + (if change then (if pos then 0.1*delta else -0.1*delta) else 0.0);
+	v = 0.0^n -> delta^n * (pre a) + (pre v);
+	p = p0 -> (delta*delta/2.0)^n * (pre a) + delta^n * (pre v) + (pre p);
+	p0[0] = 0.0;
+	p0[1..n-1] = p0[0..n-2] + x0^(n-1);
+	diff[0..n-2] = x0^(n-1) -> (p[1..(n-1)]) - (p[0..(n-2)]);
+	tok = diff >= 40.0^(n-1);
+	ok = tand(n-1,tok);
+tel
+
+node cars2(change,pos:bool) returns (ok:bool; a,v,p:real^2; diff:real^1)
+let
+	(ok,a,v,p,diff) = cars(2,change,pos);
+tel
+node cars3(change,pos:bool) returns (ok:bool; a,v,p:real^3; diff:real^2)
+let
+	(ok,a,v,p,diff) = cars(3,change,pos);
+tel
+node cars4(change,pos:bool) returns (ok:bool; a,v,p:real^4; diff:real^3)
+let
+	(ok,a,v,p,diff) = cars(4,change,pos);
+tel
+node cars5(change,pos:bool) returns (ok:bool; a,v,p:real^5; diff:real^4)
+let
+	(ok,a,v,p,diff) = cars(5,change,pos);
+tel
+
+node cars23(i:bool) returns (ok:bool; a1,v1,p1:real^2; diff1:real^1; a2,v2,p2:real^3;diff2:real^2)
+var ok1,ok2:bool;
+let
+	(ok1,a1,v1,p1,diff1) = cars(2,true,true);
+	(ok2,a2,v2,p2,diff2) = cars(3,true,false);
+	ok = ok1 and ok2;
+tel
+node cars34(i:bool) returns (ok:bool; a1,v1,p1:real^3; diff1:real^2; a2,v2,p2:real^4;diff2:real^3)
+var ok1,ok2:bool;
+let
+	(ok1,a1,v1,p1,diff1) = cars(3,true,true);
+	(ok2,a2,v2,p2,diff2) = cars(4,true,false);
+	ok = ok1 and ok2;
+tel
+
+
+node essai(i:bool)
+returns (ok:bool;x:real^16)
+var tok:bool^16;
+let
+	x[0] = 0.0 -> 2.0*pre x[0] + 1.0;
+	x[1] = 0.0 -> 2.0*pre x[1] + pre x[0];
+	x[2] = 0.0 -> 2.0*pre x[2] + pre x[1];
+	x[3] = 0.0 -> 2.0*pre x[3] + 2.0;
+	x[4] = 0.0 -> 2.0*pre x[4] + 3.0;
+	x[5] = 0.0 -> 2.0*pre x[5] + pre x[4];
+	x[6] = 0.0 -> 2.0*pre x[6] + 4.0;
+	x[7] = 0.0 -> 2.0*pre x[7] + pre x[6];
+
+	x[8] = 0.0 -> 1.5*pre x[8] + 1.0;
+	x[9] = 0.0 -> 1.5*pre x[9] + pre x[8];
+	x[10] = 0.0 -> 1.5*pre x[10] + pre x[9];
+	x[11] = 0.0 -> 1.5*pre x[11] + 2.0;
+	x[12] = 0.0 -> 1.5*pre x[12] + 3.0;
+	x[13] = 0.0 -> 1.5*pre x[13] + pre x[12];
+	x[14] = 0.0 -> 1.5*pre x[14] + 4.0;
+	x[15] = 0.0 -> 1.5*pre x[15] + pre x[14];
+
+	tok = x>=0.0^16;
+	ok=tand(16,tok);
+tel
+
+node dummy(i:bool^2)
+returns (ok:bool;x:real^2)
+let
+	x[0] = 0.0 -> if pre x[0]<=7.0 then pre x[0] + 1.0 else pre x[0];
+	x[1] = 0.0 -> if pre x[0]<=7.0 then pre x[1] + pre x[0] else pre x[1];
+	ok= true -> pre ok and (pre x[0]<=7.0) and (pre x[1]>=0.0);
+tel

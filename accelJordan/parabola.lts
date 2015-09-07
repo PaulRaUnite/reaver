@@ -1,0 +1,68 @@
+var t,x,y;
+
+initial linit0;
+
+linit0 -> linit :
+      guard 0<=x and x<=2 and 0<=y and y<=2 assign { t := 0; };
+linit -> para :
+      guard true assign { t:=t+1; x:=x+y; y:=y+1; }
+      /* load("diag"); set_display('xml)$
+	 m:matrix([1,0,0,1],[0,1,1,0],[0,0,1,1],[0,0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      jordan
+ matrix([0.0,1.0,0.0,1.0],[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],
+	       [0.0,0.0,1.0,0.0])
+ [[1.0,3.0,1.0]]
+ matrix([0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0],
+	       [1.0,0.0,-1.0,0.0])
+     ;
+para -> parae :
+      guard true assign {};
+
+linit -> paray :
+      guard y<=7 assign { t:=t+1; x:=x+y; y:=y+1; }
+      jordan
+ matrix([0.0,1.0,0.0,1.0],[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],
+	       [0.0,0.0,1.0,0.0])
+ [[1.0,3.0,1.0]]
+ matrix([0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0],
+	       [1.0,0.0,-1.0,0.0])
+     ;
+paray -> paraye :
+      guard y>=8 assign {};
+
+linit -> parax :
+      guard x<=30 assign { t:=t+1; x:=x+y; y:=y+1; }
+      jordan
+ matrix([0.0,1.0,0.0,1.0],[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],
+	       [0.0,0.0,1.0,0.0])
+ [[1.0,3.0,1.0]]
+ matrix([0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0],
+	       [1.0,0.0,-1.0,0.0])
+     ;
+parax -> paraxe :
+      guard x>=31 assign {};
+
+linit -> paraxy :
+      guard x+y<=30 assign { t:=t+1; x:=x+y; y:=y+1; }
+      jordan
+ matrix([0.0,1.0,0.0,1.0],[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],
+	       [0.0,0.0,1.0,0.0])
+ [[1.0,3.0,1.0]]
+ matrix([0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0],
+	       [1.0,0.0,-1.0,0.0])
+     ;
+paraxy -> paraxye :
+      guard x+y>=31 assign {};
+
+linit -> paraxyy :
+      guard x-2y<=30 assign { t:=t+1; x:=x+y; y:=y+1; }
+      jordan
+ matrix([0.0,1.0,0.0,1.0],[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],
+	       [0.0,0.0,1.0,0.0])
+ [[1.0,3.0,1.0]]
+ matrix([0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0],
+	       [1.0,0.0,-1.0,0.0])
+     ;
+paraxyy -> paraxyye :
+      guard x-2y>=31 assign {};

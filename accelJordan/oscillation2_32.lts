@@ -1,0 +1,114 @@
+
+/* damped, linear oscillation: equation theta'' + 2kt theta' + w^2 theta =0
+   2k: damping factor
+   w: pulse when k=0
+
+   if k>w, decreasing exponential behaviour
+   if k=w: limit
+   if k<w: damped oscillation, with pulse sqrt(w^2-k^2)
+
+   we take a sampling period of 1 sec
+*/
+
+var thetap,thetav;
+initial linit;
+
+linit -> freepi :
+	guard thetap=10 and thetav=0 assign { };
+
+freepi -> freepi:
+      /* we take w=1/8 and k=0
+	 load("diag"); set_display('xml)$
+	 m:matrix([1,1,0],[-1/64,1,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      guard thetap>=4 assign { thetap := thetap + thetav; thetav := - 1/64 thetap + thetav; }
+      jordan
+      matrix([1.0,1.0,0.0],[-0.125*%i,0.125*%i,0.0],[0.0,0.0,1.0])
+      [[1.0-0.125*%i,1.0],[0.125*%i+1.0,1.0],[1.0,1.0]]
+      matrix([0.5,4.0*%i,0.0],[0.5,-4.0*%i,0.0],[0.0,0.0,1.0])
+      ;
+freep -> freep:
+      /* we take w=1/8 and k=0
+	 load("diag"); set_display('xml)$
+	 m:matrix([1,1,0],[-1/64,1,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      guard thetap>=4 assign { thetap := thetap + thetav; thetav := - 1/64 thetap + thetav; }
+      jordan
+      matrix([1.0,1.0,0.0],[-0.125*%i,0.125*%i,0.0],[0.0,0.0,1.0])
+      [[1.0-0.125*%i,1.0],[0.125*%i+1.0,1.0],[1.0,1.0]]
+      matrix([0.5,4.0*%i,0.0],[0.5,-4.0*%i,0.0],[0.0,0.0,1.0])
+      ;
+freen -> freen:
+      /* we take w=1/8 and k=0
+	 load("diag"); set_display('xml)$
+	 m:matrix([1,1,0],[-1/64,1,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      guard thetap<=-4 assign { thetap := thetap + thetav; thetav := - 1/64 thetap + thetav; }
+      jordan
+      matrix([1.0,1.0,0.0],[-0.125*%i,0.125*%i,0.0],[0.0,0.0,1.0])
+      [[1.0-0.125*%i,1.0],[0.125*%i+1.0,1.0],[1.0,1.0]]
+      matrix([0.5,4.0*%i,0.0],[0.5,-4.0*%i,0.0],[0.0,0.0,1.0])
+      ;
+dampedp -> dampedp:
+      guard thetap<=4 and thetap>=-4
+      /* we take w=1/8 and k=1/32
+	 set_display('xml)$
+	 m:matrix([1,1,0],[-1/64,30/32,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      assign { thetap := thetap + thetav; thetav := - 1/64 thetap + 30/32 thetav; }
+      jordan
+ matrix([1.0,1.0,0.0],
+	       [-.1210307295689818*%i-0.03125,.1210307295689818*%i-0.03125,
+		0.0],[0.0,0.0,1.0])
+ [[0.96875-.1210307295689818*%i,1.0],
+	 [.1210307295689818*%i+0.96875,1.0],[1.0,1.0]]
+  matrix([.1290994448735805*%i+0.5,4.131182235954578*%i,0.0],
+	       [0.5-.1290994448735805*%i,-4.131182235954578*%i,0.0],
+	       [0.0,0.0,1.0])
+;
+dampedn -> dampedn:
+      guard thetap<=4 and thetap>=-4
+      /* we take w=1/8 and k=1/32
+	 set_display('xml)$
+	 m:matrix([1,1,0],[-1/64,30/32,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      assign { thetap := thetap + thetav; thetav := - 1/64 thetap + 30/32 thetav; }
+      jordan
+ matrix([1.0,1.0,0.0],
+	       [-.1210307295689818*%i-0.03125,.1210307295689818*%i-0.03125,
+		0.0],[0.0,0.0,1.0])
+ [[0.96875-.1210307295689818*%i,1.0],
+	 [.1210307295689818*%i+0.96875,1.0],[1.0,1.0]]
+  matrix([.1290994448735805*%i+0.5,4.131182235954578*%i,0.0],
+	       [0.5-.1290994448735805*%i,-4.131182235954578*%i,0.0],
+	       [0.0,0.0,1.0])
+;
+
+freepi -> freepie:
+	guard thetap<= 4 assign {};
+freepie -> dampedp:
+	guard true assign {};
+dampedp -> dampedpe:
+	guard thetap<=-4 assign{};
+dampedpe -> freen:
+	guard true assign {};
+dampedp -> dampedpe2:
+	guard thetap>=4 and thetav>=0 assign{};
+dampedpe2 -> freep:
+	guard true assign {};
+freen -> freene:
+	guard thetap>=-4 assign{};
+freene -> dampedn:
+	guard true assign {};
+dampedn -> dampedne:
+	guard thetap>=4 assign {};
+dampedne -> freep:
+	guard true assign {};
+dampedn -> dampedne2:
+	guard thetap<=-4 and thetav<=0 assign {};
+dampedne2 -> freen:
+	guard true assign {};
+freep -> freepe:
+	guard thetap<=4 assign{};
+freepe -> dampedp:
+	guard true assign {};

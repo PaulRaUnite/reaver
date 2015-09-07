@@ -1,0 +1,77 @@
+
+var thetap,thetav;
+initial linit;
+
+linit -> lfreep0 :
+      guard thetap=8 and thetav=0 assign { };
+
+lfreep0 -> lfreep:
+      guard thetap>=4
+      /*
+	 load("diag"); set_display('xml)$
+	 m:matrix([1,-1/8,0],[1/8,1,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      assign { thetap := thetap - 1/8 thetav; thetav := 1/8 thetap + thetav; }
+      jordan
+matrix([1.0,1.0,0.0],[%i,-1.0*%i,0.0],[0.0,0.0,1.0])
+[[1.0-0.125*%i,1.0],[0.125*%i+1.0,1.0],[1.0,1.0]]
+matrix([0.5,-0.5*%i,0.0],[0.5,0.5*%i,0.0],[0.0,0.0,1.0])
+;
+lfreep -> lfreep1:
+     guard thetap<=4 assign {};
+
+ldamped -> lfreen0:
+     guard thetap<=-4 assign {};
+lfreen0 -> lfreen:
+      guard thetap<=-4
+      /*
+	 load("diag"); set_display('xml)$
+	 m:matrix([1,-1/8,0],[1/8,1,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      assign { thetap := thetap - 1/8 thetav; thetav := 1/8 thetap + thetav; }
+      jordan
+matrix([1.0,1.0,0.0],[%i,-1.0*%i,0.0],[0.0,0.0,1.0])
+[[1.0-0.125*%i,1.0],[0.125*%i+1.0,1.0],[1.0,1.0]]
+matrix([0.5,-0.5*%i,0.0],[0.5,0.5*%i,0.0],[0.0,0.0,1.0])
+;
+lfreen -> lfreen1:
+      guard thetap>=-4 assign {};
+ldamped -> lfreep2:
+     guard thetap>=4 assign {};
+lfreep2 -> lfreep:
+      guard thetap>=4
+      /*
+	 load("diag"); set_display('xml)$
+	 m:matrix([1,-1/8,0],[1/8,1,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+      assign { thetap := thetap - 1/8 thetav; thetav := 1/8 thetap + thetav; }
+      jordan
+matrix([1.0,1.0,0.0],[%i,-1.0*%i,0.0],[0.0,0.0,1.0])
+[[1.0-0.125*%i,1.0],[0.125*%i+1.0,1.0],[1.0,1.0]]
+matrix([0.5,-0.5*%i,0.0],[0.5,0.5*%i,0.0],[0.0,0.0,1.0])
+;
+
+lfreep1 -> ldamped:
+      guard thetap<=4 and thetap>=-4
+      /*
+	 load("diag"); set_display('xml)$
+	 m:matrix([63/64,-63/512,0],[63/512,63/64,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+       assign { thetap := 63/64 thetap - 63/512 thetav; thetav := 63/512 thetap + 63/64 thetav; }
+       jordan
+matrix([1.0,1.0,0.0],[%i,-1.0*%i,0.0],[0.0,0.0,1.0])
+[[0.984375-0.123046875*%i,1.0],[0.123046875*%i+0.984375,1.0],[1.0,1.0]]
+matrix([0.5,-0.5*%i,0.0],[0.5,0.5*%i,0.0],[0.0,0.0,1.0])
+;
+lfreen1 -> ldamped:
+      guard thetap<=4 and thetap>=-4
+      /*
+	 load("diag"); set_display('xml)$
+	 m:matrix([63/64,-63/512,0],[63/512,63/64,0],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+      */
+       assign { thetap := 63/64 thetap - 63/512 thetav; thetav := 63/512 thetap + 63/64 thetav; }
+       jordan
+matrix([1.0,1.0,0.0],[%i,-1.0*%i,0.0],[0.0,0.0,1.0])
+[[0.984375-0.123046875*%i,1.0],[0.123046875*%i+0.984375,1.0],[1.0,1.0]]
+matrix([0.5,-0.5*%i,0.0],[0.5,0.5*%i,0.0],[0.0,0.0,1.0])
+;

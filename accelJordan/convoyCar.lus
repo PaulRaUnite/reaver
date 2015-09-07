@@ -1,0 +1,65 @@
+const lambda = 0.05;
+const lambda2 = 0.05;
+const delta = 0.1;
+const x0=50.0;
+
+node tand(const n:int; tb:bool^n) returns (res:bool)
+var tres:bool^(n+1);
+let
+	tres[0]=true;
+	tres[1..n]=tres[0..n-1] and tb;
+	res = tres[n];
+tel
+
+node cars(const n:int; change,pos:bool)
+returns (ok,mychange,mypos:bool; a:real^n; v:real^1; da,dv,dp:real^(n-1))
+var tok:bool^(n-1);
+    pok:bool;
+let
+	(mychange,mypos) = (change,pos);
+(*
+	      if (pre a[0])>=1.0 then
+	      	 if change and not pos then (change,pos)
+		 else (false,false)
+	      else if v[0]<=0.0 then
+	      	 if change and not pos then (true,true)
+		 else (change,pos)
+	      else (change,pos);
+*)
+ 	a[1..n-1] = 0.0^(n-1) ->
+		  lambda^(n-1) *(pre dv) +
+		  lambda2^(n-1)*((pre dp) - x0^(n-1));
+	a[0] = 0.0 -> (pre a[0]) + (if mychange then (if mypos then 0.1*delta else -0.1*delta) else 0.0);
+	v[0] = 0.0 -> delta * (pre a[0]) + (pre v[0]);
+	da[0..n-2] = a[0..n-2]-a[1..n-1];
+	dv = 0.0^(n-1) -> delta^(n-1) * (pre da) + (pre dv);
+	dp = (x0)^(n-1) ->
+	     (delta*delta/2.0)^(n-1) * (pre da) +
+	     delta^(n-1) * (pre dv) +
+	     (pre dp);
+	tok = dp >= 10.0^(n-1);
+	pok = tand(n-1,tok);
+	ok = true -> (pre pok);
+tel
+
+node cars2(change,pos:bool) returns (ok,mychange,mypos:bool; a:real^2; vl:real; da,dv,dp:real^1)
+let
+	(ok,mychange,mypos,a,vl,da,dv,dp) = cars(2,false,false);
+tel
+node cars2_cst(vl_init:real;change,pos:bool) returns (ok,mychange,mypos:bool; a:real^2; vl:real; da,dv,dp:real^1)
+let
+	(ok,mychange,mypos,a,vl,da,dv,dp) = cars(2,false,false);
+tel
+node cars2_plus(change,pos:bool) returns (ok,mychange,mypos:bool; a:real^2; vl:real; da,dv,dp:real^1)
+let
+	(ok,mychange,mypos,a,vl,da,dv,dp) = cars(2,change,true);
+tel
+
+node cars3(vl_init:real;change,pos:bool) returns (ok,mychange,mypos:bool; a:real^3; vl:real; da,dv,dp:real^2)
+let
+	(ok,mychange,mypos,a,vl,da,dv,dp) = cars(3,false,false);
+tel
+node cars3_cst(vl_init:real;change,pos:bool) returns (ok,mychange,mypos:bool; a:real^3; vl:real; da,dv,dp:real^2)
+let
+	(ok,mychange,mypos,a,vl,da,dv,dp) = cars(3,false,false);
+tel

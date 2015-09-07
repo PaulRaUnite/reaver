@@ -1,0 +1,38 @@
+
+var t,time;
+initial linit;
+
+linit -> heat :
+      guard t>=0 and t<=2 assign { time := 0; };
+heat -> heat1 :
+      guard t<=7 assign { t := 9/10 t + 1; time := time+1; }
+      jordan
+      [[1,0,1],[0,1/10,0],[0,0,1/10]],
+      [{9/10,[1]},{1.0,[2]}],
+      [[1,0,-10],[0,10,0],[0,0,10]]
+      ;
+heat1 -> heat2 :
+      guard t>=7 assign { };
+heat2 -> noheat :
+      guard true assign { time := 0; };
+
+noheat -> noheat1 :
+      guard t>=3 assign { t := 9/10 t; time := time+1; }
+      jordan
+      [[1,0,0],[0,1,0],[0,0,1]],
+      [{9/10,[1]},{1.0,[2]}],
+      [[1,0,0],[0,1,0],[0,0,1]]
+      ;
+
+noheat1 -> noheat2 :
+      guard t<=3 assign {};
+noheat2 -> heat :
+      guard true assign { time := 0; };
+
+
+/*
+ load("diag");
+m:matrix([9/10,0,1],[0,1,1],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;
+
+m:matrix([9/10,0,0],[0,1,1],[0,0,1]); j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;
+*/

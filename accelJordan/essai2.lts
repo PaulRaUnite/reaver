@@ -1,0 +1,13 @@
+
+var thetap,thetav;
+initial linit;
+
+linit -> l :
+      guard thetap=10 and thetav=0 assign { };
+l -> l1:
+      guard true assign { thetap := thetap + thetav; thetav := - 1/100 thetap + 98/100 thetav; }
+      jordan
+      [[0,1,1],[(1,0), (1,0),(1,0)],[1,1,1]],
+      [{1,[1]},{0.5,[2]}],
+      [[0,1,1],[(0,1),(1,0),(1,0)],[1,1,1]]
+      ;

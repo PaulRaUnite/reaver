@@ -1,0 +1,136 @@
+/*
+
+function simInvPendulum ( nSteps)
+
+%% Some problem data
+A = [1.0000   0.0100   0.0001   0.0000;
+     0        0.9982   0.0267   0.0001;
+     0        0.0000   1.0016   0.0100;
+     0       -0.0045   0.3119   1.0016];
+
+B =  [0.0001;
+      0.0182;
+      0.0002;
+      0.0454];
+
+K = [ -0.9384   -1.5565   18.1110    3.3499 ];
+
+Equation:
+x'=Ax-(Kx)B
+
+x'_i=(\sum_j A_ij - K_j B_i) x_j
+
+ML program:
+let make0 x y =
+    Array.init
+      x
+      (fun i -> Array.make y 0.)
+;;
+let dim1 mat = Array.length mat
+;;
+let dim2 mat =
+  let length = Array.length mat in
+  if length=0 then failwith "" else Array.length mat.(0)
+;;
+let mul matxy matyz =
+    let dimx = dim1 matxy in
+    let dimy = dim1 matyz in
+    let dimz = dim2 matyz in
+    assert(dim2 matxy = dimy);
+    let matxz = make0 dimx dimz in
+    for i=0 to pred dimx do
+      for k=0 to pred dimz do
+	let res = ref 0. in
+	for j=0 to pred dimy do
+	  let elxy = matxy.(i).(j) in
+	  let elyz = matyz.(j).(k) in
+	  if (not (elxy=0.) && not (elyz=0.)) then
+	    res := !res +. elxy *. elyz
+	done;
+	matxz.(i).(k) <- !res
+      done;
+    done;
+    matxz
+;;
+let mapij f t =
+  Array.mapi
+    (begin fun i row ->
+      Array.mapi
+	 (begin fun j el -> f i j el end)
+	 row
+     end)
+    t
+;;
+let add matA matB =
+ mapij
+   (fun i j a -> a +. matB.(i).(j))
+   matA
+;;
+
+let matA = [| [|1.; 0.01  ; 0.0001; 0.|];
+	      [|0.; 0.9982; 0.0267; 0.0001|];
+	      [|0.; 0.0;    1.0016; 0.01|] ;
+	      [|0.; -0.0045;0.3119; 1.0016|]
+	   |];;
+let matB = [| [|0.0001|]; [|0.0182|]; [|0.0002|]; [|0.0454|]|];;
+let matK = [| [|-0.9384;-1.5565;18.1110;3.3499 |] |];;
+
+
+let matM = add matA (mul matB matK);;
+   val matM : float array array =
+  [|[|0.99990616; 0.00984435; 0.00191110000000000021; 0.00033499|];
+    [|-0.01707888; 0.9698717; 0.356320200000000031; 0.0610681800000000066|];
+    [|-0.000187680000000000019; -0.000311300000000000032; 1.0052222;
+      0.01066998|];
+    [|-0.04260336; -0.0751651000000000125; 1.1341394; 1.15368546000000016|]|]
+
+
+%% x(1,1): position of cart
+%% x(2,1): velocity of cart
+%% x(3,1): angle of pendulum in degrees
+%% x(4,1): rate of change of angle
+
+%% Initial state
+%%  x(1,1) In [-.5,.5] X(2,1) IN [-.2,.2], x(3,1) IN [-10,10] x(4,1) IN [-1,2]
+
+x = [ -.5 + rand ; -.2 + 0.4 * rand; -5 + 10 * rand; -1 + 2 * rand ];
+
+xVals(:,1) = x;
+
+for i = 1 : nSteps
+   uFeed = K *xVals(:,i); %% This is the feedback
+   uDist = -.2+ 0.4* rand; %% disturbance IN [-.2, .2]
+   u = uDist - uFeed; %% Overall input = disturbance - feedback
+   x = A * x + u * B %% update the state of the pendulum
+   xVals(:,i+1) = x; %% For recording purposes
+end
+*/
+
+var carp, cart,thetap,thetav;
+
+initial linit;
+linit -> start :
+      guard carp>=-0.5 and carp<=0.5 and carv>=-0.2 and carv<=0.2 and thetap>=-10. and thetap<=10. and thetav>=-1. and thetav<=1. assign {};
+
+start :
+      guard true assign {
+      carp := 0.99990616*carp + 0.00984435*carv + 0.00191110000000000021*thetap + 0.00033499 * thetav;
+      carv := -0.01707888carp + 0.9698717carv + 0.356320200000000031thetap + 0.0610681800000000066 thetavv;
+      thetap := -0.000187680000000000019carp - 0.000311300000000000032carv + 1.0052222 thetap +
+      0.01066998 thetav;
+    thetav := -0.04260336carp -0.0751651000000000125carv + 1.1341394 thetap+ 1.15368546000000016 thetav;
+    }
+    jordan
+
+
+/*
+	 load("diag"); set_display('xml)$
+  m:matrix([1.0001,    0.0102,   -0.0017,   -0.0003],
+    [0.0171,    1.0265,   -0.3029,   -0.0609],
+    [0.0002,    0.0003,    0.9980,    0.0093],
+    [0.0426,    0.0662,   -0.5103,    0.8495]);
+	 j:jordan(m); mj:dispJordan(j); pinv:ModeMatrix(m,j);p:invert(pinv);pinv.mj.p;  set_display('none)$ float(rectform(pinv)); float(rectform(j)); float(rectform(p));
+
+jordan({{1.0001,0.0102,-0.0017,-0.0003},{0.0171,1.0265,-0.3029,-0.0609},{0.0002,0.0003,0.9980,0.0093},{0.0426,0.0662,-0.5103,0.8495}})
+
+*/
