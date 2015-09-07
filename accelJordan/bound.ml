@@ -490,7 +490,7 @@ module Complex = struct
      \varphi)$ may reach a global extremum in the interval
      [nmin,nmax] *)
   let textrema_of_egamma_sin ~gamma ~theta ~varphi ~nmin ~nmax =
-    if true then
+    if false then
       printf "textrema_of_egamma_sin gamma=%5G theta=%5G varphi=%5G nmin:%i nmax:%i@."
 	gamma theta varphi nmin nmax
     ;
@@ -505,7 +505,7 @@ module Complex = struct
 	let l0 = if phimin <= -.atan_theta_div_gamma then lmin else lmin+.1. in
 	let t0 = (-.atan_theta_div_gamma -. varphi +.l0 *. pi) /. theta in
 	let t1 = t0+. pi /. theta in
-	if true then
+	if false then
 	  printf "theta_div_gamma=%5G atan=%5G lmin=%5G,phimin=%5G,l0=%5G,t0=%5G,t1=%5G@."
 	    theta_div_gamma atan_theta_div_gamma lmin phimin l0 t0 t1
 	;
@@ -517,7 +517,7 @@ module Complex = struct
 	  let l2 = if phimax <= -.atan_theta_div_gamma then lmax-.1. else lmax in
 	  let t2 = (-.atan_theta_div_gamma -. varphi +. l2 *. pi) /. theta in
 	  let t3 = t2 -. pi /. theta in
-	  if true then
+	  if false then
 	    printf "lmax=%5G,phimax=%5G,l2=%5G,t2=%5G,t3=%5G@."
 	      lmax phimax l2 t2 t3
 	  ;

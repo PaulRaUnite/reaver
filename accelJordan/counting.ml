@@ -506,7 +506,7 @@ let solve_for_counting_jordanpoly ~start leqn =
   res
 
 let main ~apron ~trans ~polyjordan ~first (lexpr:Bound.expr list) =
-  if true then printf "Counting.main <= first=%i@." first;
+  if false then printf "Counting.main <= first=%i@." first;
   let start = start_for_counting_jordanpoly ~apron ~trans ~polyjordan ~first lexpr in
   if false then printf "start = %i@ " start;
   let n = counting_jordanpoly_preamble ~apron ~first ~start ~trans ~polyjordan lexpr in
@@ -520,6 +520,6 @@ let main ~apron ~trans ~polyjordan ~first (lexpr:Bound.expr list) =
     in
     if false then printf "selected eqn = %a@." (Print.list print_eqn) leqn;
     let n = solve_for_counting_jordanpoly ~start leqn in
-    if true then printf "res = %i@." n;
+    if false then printf "res = %i@." n;
     n
   end

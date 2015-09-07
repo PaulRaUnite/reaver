@@ -196,7 +196,7 @@ let assigngen_apply
     poly
     (assigngen:assigngen)
     =
-  if true then printf "assigngen_apply poly:%a %a@ @?"
+  if false then printf "assigngen_apply poly:%a %a@ @?"
     (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimx) poly
     print_assigngen assigngen
   ;
@@ -208,29 +208,29 @@ let assigngen_apply
   else begin
     let { lvertex; lray; lline } = assigngen in
     let nbdims = trans.jordan.Jordan.dim in
-    if true then printf "nbdims=%i@ @?" nbdims;
+    if false then printf "nbdims=%i@ @?" nbdims;
     let tdim = Array.init (nbdims-1) (fun i ->  i) in
     (* 1. compute image by vertices *)
-    if true then printf "computing images by vertices: @?";
+    if false then printf "computing images by vertices: @?";
     let limages =
       List.rev_map
 	(begin fun vertex ->
 	  let res = Apron.Abstract0.assign_linexpr_array man poly tdim vertex None in
 	  let res = poly_approximate ~bdigits:(!Option.nbbits) res in
-	  if true then printf ".@?";
+	  if false then printf ".@?";
 	  res
 	 end)
 	lvertex
     in
-    if true then printf "done@.";
+    if false then printf "done@.";
     let respoly = ref (List.hd limages) in
-    if true then
+    if false then
       printf "limages=%a@ @?"
 	(print_list (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimx)) limages
     ;
     (* 2. add to respoly lines and rays *)
     if lline<>[] || lray<>[] then begin
-      if true then printf "adding lines and rays@.";
+      if false then printf "adding lines and rays@.";
       (* Extract the generators of polyx *)
       let tlingen0 = Apron.Abstract0.to_generator_array man poly in
       if false then
@@ -278,25 +278,25 @@ let assigngen_apply
 	   end)
 	  tlingen0
       );
-      if true then
+      if false then
 	printf "generators to add=%a@ @?"
 	  (print_list (Apronaux.print_generator0 ~string_of_dim:Apronaux.string_of_dimx))
 	  !res
       ;
       (* Add transformed generators to respoly *)
       respoly := Apron.Abstract0.add_ray_array man !respoly (Array.of_list !res);
-      if true then printf "done@.";
+      if false then printf "done@.";
     end;
     (* 3. convex hull with images by other vertices *)
-    if true then printf "computing convex hull @?";
+    if false then printf "computing convex hull @?";
     respoly := Apron.Abstract0.join_array man (Array.of_list (!respoly :: (List.tl limages)));
-    if true then printf "done => %a@."
+    if false then printf "done => %a@."
       (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimx) !respoly;
     respoly := poly_approximate ~bdigits:(!Option.nbbitsu) !respoly;
-    if true then printf "approx => %a@."
+    if false then printf "approx => %a@."
       (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimx) !respoly;
 
-    if true then
+    if false then
       printf "assigngen_apply => @."
     ;
     !respoly
@@ -331,18 +331,18 @@ let abstrans_apply
   in
 *)
   let res = guardassigngen_apply ~trans man poly ~tlincons ~assigngen:abstrans.cassigngen in
-  if true then
+  if false then
     printf "assigngen_apply => %a@ @?"
       (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimx) res
   ;
   let res2 = Apron.Abstract0.meet_lincons_array man res tlincons in
-  if true then
+  if false then
     printf "assigngen_apply inter guard => %a, %a@ @?"
       (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimx) res
       (Apronaux.print_abstract0_gen ~string_of_dim:Apronaux.string_of_dimx) res
   ;
   let res2 = Apron.Abstract0.assign_linexpr_array man res2 trans.tdim trans.tlinexpr0 None in
-  if true then
+  if false then
     printf "apply_linexpr => %a, %a@ @?"
       (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimx) res2
       (Apronaux.print_abstract0_gen ~string_of_dim:Apronaux.string_of_dimx) res2

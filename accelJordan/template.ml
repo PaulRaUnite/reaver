@@ -74,7 +74,7 @@ let ltemplate ~nbcoeffs n : Bound.expr list =
   let lunary = lunary_make ~nbcoeffs in
   let lbinaryj = lbinary_of_lweight ~nbcoeffs lweight in
   let res = List.rev_append lunary lbinaryj in
-  if true then printf "%i coeffs, %i template constraints@." nbcoeffs (List.length res);
+  if false then printf "%i coeffs, %i template constraints@." nbcoeffs (List.length res);
   res
 
 (*  ********************************************************************** *)
@@ -439,20 +439,20 @@ let abstract
     :
     'a Apron.Abstract0.t
     =
-  if true then printf "Template.abstract <= nmin=%i, nmax=%i@." nmin nmax;
+  if false then printf "Template.abstract <= nmin=%i, nmax=%i@." nmin nmax;
   let { nbcoeffs; dmap_coeff_dim; sinv_yx; _ } = trans in
   let lexprbound = Bound.bound_lexpr ~dmap_coeff_dim ~nmin ~nmax ltemplate in
-  if true then
+  if false then
     printf "lexprbound = %a@ "
       (Print.list (Print.pair Bound.print_expr Bound.Int.print))
       lexprbound
   ;
   let tlincons0 = tlincons0_of_lexprbound lexprbound in
   let polyjordan = Apron.Abstract0.of_lincons_array apron 0 (nbcoeffs-1) tlincons0 in
-  if true then
+  if false then
     printf "polyjordan=%a@ " (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimj) polyjordan
   ;
-  if true then printf "Template.abstract =>@.";
+  if false then printf "Template.abstract =>@.";
   polyjordan
 
 let abstrans_of_ltemplate
@@ -472,7 +472,7 @@ let refine_abstrans_with_poly_guard
     :
     unit
     =
-  if true then printf "Template.refine_with_poly_guard <= poly=%a@."
+  if false then printf "Template.refine_with_poly_guard <= poly=%a@."
     (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimj) poly
   ;
   let guardtrans = abstrans.guardtrans in
@@ -489,7 +489,7 @@ let refine_abstrans_with_poly_guard
     | Some [] ->
       abstrans.cassigngen <- abstrans.assigngen
     | Some lpolyjordan2 ->
-      if true then printf "computing n@.";
+      if false then printf "computing n@.";
       let n =
 	begin match lpolyjordan2 with
 	| [polyjordan2] ->
@@ -507,7 +507,7 @@ let refine_abstrans_with_poly_guard
 	  let first = ref (-1) and n = ref 0 in
 	  while !first < !n && !n < max_int do
 	    first := !n;
-	    if true then printf "first=%i@ " !first;
+	    if false then printf "first=%i@ " !first;
 	    if !map_ipolyjordan2=Mappe.empty then
 	      n := max_int
 	    else begin
@@ -538,7 +538,7 @@ let refine_abstrans_with_poly_guard
 	  !n
 	end
       in
-      if true then
+      if false then
 	printf "done, nfinal=%i@." n;
       if n=max_int then
 	abstrans.cassigngen <- abstrans.assigngen
@@ -546,22 +546,22 @@ let refine_abstrans_with_poly_guard
 	abstrans.cassigngen <- assigngen_bottom
       else begin
 	assert (if n>=1 then true else (printf "n=%i@." n; false));
-	if true then printf "reabstracting @?";
+	if false then printf "reabstracting @?";
 	let polyjordan =
 	  abstract ~apron ~trans:guardtrans.trans ~nmin:0 ~nmax:(n-1) abstrans.ltemplate
 	in
-	if true then printf "done => polyjordan=%a@."
+	if false then printf "done => polyjordan=%a@."
 	  (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimj) polyjordan;
-	if true then printf "joining lpolyjordan2(size %i) @?" (List.length lpolyjordan2);
+	if false then printf "joining lpolyjordan2(size %i) @?" (List.length lpolyjordan2);
 	let upolyjordan2 = Apron.Abstract0.join_array apron (Array.of_list lpolyjordan2) in
-	if true then printf "done => %a@.meet polyjordan upolyjordan2 @?"
+	if false then printf "done => %a@.meet polyjordan upolyjordan2 @?"
 	  (Apronaux.print_abstract0 ~string_of_dim:Apronaux.string_of_dimj) upolyjordan2;
 	Apron.Abstract0.meet_with apron polyjordan upolyjordan2;
-	if true then printf "done@.";
+	if false then printf "done@.";
 	abstrans.cassigngen <-
 	  assigngenx_of_polyjordany ~trans:guardtrans.Trans.trans ~apron polyjordan
       end;
-      if true then printf "Template.refine_with_poly_guard =>@.";
+      if false then printf "Template.refine_with_poly_guard =>@.";
   end
 
 
