@@ -1,14 +1,18 @@
 Compilation:
 
+- installer les dependances par le script install.sh de ReaVer
+
+ou
+
 - installer (avec opam) apron (gere les dependances)
 
 - installer camllib et fixpoint (solveur de point-fixe qui a besoin de camllib).
 
   Nicolas Berthier a(vait) prepare une version opam, qu'on peut
   retrouver sous le nom de fix (!) qui s'installe sans camllib (ca
-  doit l'incorprorer).
+  doit l'incorporer).
 
-  Si tu veux garder leMakefile actuel,
+  Si tu veux garder le Makefile actuel,
 
   svn co https://scm.gforge.inria.fr/anonscm/svn/bjeannet/pkg/camllib/trunk camllib
   svn co https://scm.gforge.inria.fr/anonscm/svn/bjeannet/pkg/fixpoint/trunk camllib
