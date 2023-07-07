@@ -6,43 +6,54 @@ LABEL authors="ptokarie"
 RUN echo "#!/bin/bash\n\$@" > /usr/bin/sudo
 RUN chmod +x /usr/bin/sudo
 
-RUN apt update && apt install -y build-essential m4 autoconf libwww-perl git && apt-get clean
-COPY ./trunk/src/download.sh .
-RUN mkdir -p /root/Downloads/
-RUN ./download.sh
-WORKDIR /root/Downloads
-COPY ./trunk/src/ocaml.sh /root/Downloads
+RUN apt update && apt install -y build-essential m4 autoconf git && apt-get clean
+RUN mkdir ~/vendor
+WORKDIR /root/vendor
+COPY ./vendor/ocaml.sh /root/vendor
+COPY ./vendor/ocaml-4.02.0.tar.gz /root/vendor
 RUN ./ocaml.sh
-COPY ./trunk/src/camlidl.sh /root/Downloads
+COPY ./vendor/camlidl.sh /root/vendor
+COPY ./vendor/camlidl-1.05.tar.gz /root/vendor
 RUN ./camlidl.sh
-COPY ./trunk/src/findlib.sh /root/Downloads
+COPY ./vendor/findlib.sh /root/vendor
+COPY ./vendor/findlib-1.9.6.tar.gz /root/vendor
 RUN ./findlib.sh
-COPY ./trunk/src/gmp.sh /root/Downloads
+COPY ./vendor/gmp.sh /root/vendor
+COPY ./vendor/gmp-5.1.3.tar.bz2 /root/vendor
 RUN ./gmp.sh
-COPY ./trunk/src/mpfr.sh /root/Downloads
+COPY ./vendor/mpfr.sh /root/vendor
+COPY ./vendor/mpfr-3.1.6.tar.bz2 /root/vendor
 RUN ./mpfr.sh
-COPY ./trunk/src/eglib.sh /root/Downloads
+COPY ./vendor/eglib.sh /root/vendor
+COPY ./vendor/EGlib.tar.bz2 /root/vendor
 RUN ./eglib.sh
-COPY ./trunk/src/qsopt_ex.sh /root/Downloads
+COPY ./vendor/qsopt_ex.sh /root/vendor
+COPY ./vendor/QSoptExact.tar.bz2 /root/vendor
 RUN ./qsopt_ex.sh
-COPY ./trunk/src/ocamlyices.sh /root/Downloads
+COPY ./vendor/ocamlyices.sh /root/vendor
+COPY ./vendor/ocamlyices /root/vendor/ocamlyices
+COPY ./vendor/yices-1.0.40-x86_64-unknown-linux-gnu.tar.gz /root/vendor/
 RUN ./ocamlyices.sh
-COPY ./trunk/src/mlgmpidl.sh /root/Downloads
+COPY ./vendor/mlgmpidl.sh /root/vendor
+COPY ./vendor/mlgmpidl /root/vendor/mlgmpidl
 RUN ./mlgmpidl.sh
-COPY ./trunk/src/mlcuddidl.sh /root/Downloads
+COPY ./vendor/mlcuddidl.sh /root/vendor
+COPY ./vendor/mlcuddidl /root/vendor/mlcuddidl
 RUN ./mlcuddidl.sh
-COPY ./trunk/src/camllib.sh /root/Downloads
+COPY ./vendor/camllib.sh /root/vendor
+COPY ./vendor/camllib /root/vendor/camllib
 RUN ./camllib.sh
-COPY ./trunk/src/fixpoint.sh /root/Downloads
+COPY ./vendor/fixpoint.sh /root/vendor
+COPY ./vendor/fixpoint-2.3.2.tar.gz /root/vendor
 RUN ./fixpoint.sh
-COPY ./trunk/src/apron.sh /root/Downloads
+COPY ./vendor/apron.sh /root/vendor
+COPY ./vendor/apron-0.9.11.tar.gz /root/vendor
 RUN ./apron.sh
-COPY ./trunk/src/bddapron.sh /root/Downloads
+COPY ./vendor/bddapron.sh /root/vendor
+COPY ./vendor/bddapron-2.2.1.tar.gz /root/vendor
 RUN ./bddapron.sh
-COPY . /reaver/
-WORKDIR /reaver/trunk/src/
-RUN ./finish.sh
-RUN make
-RUN make install
+COPY ./trunk /reaver/
+WORKDIR /reaver/src/
+RUN ./install.sh
 ENV OCAMLRUNPARAM=b
 ENTRYPOINT ["./reaver.opt"]
