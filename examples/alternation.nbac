@@ -1,0 +1,15 @@
+state
+  init,ok : bool;
+  b0,b1: bool;
+  x,y : int;
+
+transition
+  init' = false;
+  ok' = if init then true else    ok and x>=y;
+  b0' = if init then false else   not b1;
+  b1' = if init then false else   b0;
+  x' = if init then 0 else        if (b0 = b1) then x+1 else x;
+  y' = if init then 0 else        if (b0 <> b1) then y+1 else y;
+
+initial true;
+invariant init or ok;

@@ -1,0 +1,23 @@
+state
+  speed, count: int;
+  init, ok: bool;
+
+input
+	speed_diff: int;
+
+local
+  plus,minus: bool;
+
+definition
+	plus = if init then false else (speed <= 9);
+	minus = if init then false else (speed >= 11);
+
+transition
+	init' = false;
+	ok' = if init then true else ok and count < 15;
+	count' = if init then 0 else if speed < 8 or speed > 12 then count+1 else 0;
+	speed' = if init then 0 else if speed + speed_diff >= 0 then speed + speed_diff else 0;
+
+assertion speed_diff <= 4 and speed_diff >= -4 and (not plus or (speed_diff > 0)) and (not minus or (speed_diff < 0));
+initial init;
+invariant init or ok;

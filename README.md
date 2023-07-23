@@ -10,7 +10,7 @@ Use docker, otherwise GMP installation will probably break your system.
 ./build_image.sh
 ```
 
-If you still want to do it, use `install.sh` script.
+If you still want to do it, use `install.sh` script (not tested).
 
 Original ReaVer description is [here](./trunk/src/README)
 
@@ -20,5 +20,5 @@ Guide: https://pschrammel.bitbucket.io/schrammel-it/research/reaver/reaver_userg
 
 Using script that calls built docker image:
 ```bash
-./run.sh <filepath> [-s <strategy instructions from guide>]
+./run.sh <filepath> [-s <strategy instructions from the guide above>]
 ```
