@@ -1,0 +1,18 @@
+{
+  "name": "fixpoint",
+  "version": "2.3.2",
+  "description": "",
+  "license": "GPL-3",
+  "esy": {
+    "build": "dune build -p #{self.name}",
+    "buildDev": "dune build --promote-install-files --root . --only-package #{self.name}",
+    "NOTE": "Optional release Section. Customizes result of `esy release`",
+    "release": {}
+  },
+  "scripts": {},
+  "dependencies": {
+    "@opam/dune": "*",
+    "ocaml": "4.08.x",
+    "@opam/camllib": "1.3.3"
+  }
+}

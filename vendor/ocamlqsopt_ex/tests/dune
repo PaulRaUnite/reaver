@@ -1,0 +1,2 @@
+(test (name test_qsopt_ex) (modules test_qsopt_ex) (libraries ocamlqsopt_ex))
+(test (name test) (modules test) (libraries ocamlqsopt_ex))

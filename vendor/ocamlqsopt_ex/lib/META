@@ -1,0 +1,5 @@
+description = "OCaml Interface QSopt_ex library"
+version = "1.0"
+archive(byte) = "ocamlqsopt_ex.cma"
+archive(native) = "ocamlqsopt_ex.cmxa"
+archive(native,gprof) = "ocamlqsopt_ex.p.cmxa"

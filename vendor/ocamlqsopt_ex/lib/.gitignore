@@ -1,0 +1,11 @@
+QSopt_ex-2.5.10
+EGlib-2.6.21
+QSopt_ex.*
+EGlib.*
+!EGlib.tar.bz2
+libQSopt_ex.*
+libQSoptEx.*
+libEGlib.*
+dllEGlib.*
+dllQSopt_ex.*
+dllQSoptEx.*

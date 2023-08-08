@@ -1,0 +1,16 @@
+OCaml Interface to QSOpt_ex-2.5.10
+
+***
+
+For an example see test.ml
+
+***
+
+To build
+
+esy build
+
+***
+
+The main file is the file lp.ml. 
+See lp.mli for the usage.

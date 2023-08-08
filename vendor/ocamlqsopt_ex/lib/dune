@@ -1,0 +1,18 @@
+(library
+  (name ocamlqsopt_ex)
+  (public_name ocamlqsopt_ex)
+  (modules lp numutil qsopt_ex)
+  (libraries num gmp)
+  (flags (:standard -w -50-27-32-35-8-34-6 -annot -g))
+  (foreign_stubs
+  (language c)
+  (names qsopt_ex_if)
+  (flags -I%{project_root}/lib/ -I/usr/local/include -l/usr/local/lib -fPIC))
+  (foreign_archives QSoptEx EGlib))
+
+(rule
+  (targets libEGlib.a dllEGlib.so libQSoptEx.a dllQSoptEx.so EGlib.h QSopt_ex.h)
+  (deps EGlib.tar.bz2 QSoptExact.tar.bz2 build.sh)
+  (mode fallback)
+  (action
+    (run bash ./build.sh)))

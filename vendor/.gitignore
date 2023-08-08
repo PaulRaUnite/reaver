@@ -1,0 +1,4 @@
+*.sh
+!fixpoint/*
+!ocamlqsopt_ex/*
+!ocamlyices/*

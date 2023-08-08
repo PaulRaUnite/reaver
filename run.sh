@@ -23,4 +23,4 @@ while [ $# -ge 1 ]; do
 
         shift
 done
-cat "$1" | sudo docker run -i reaver -s "$strategy" -inputformat nbac -debug DEBUG
+cat "$1" | docker run -i reaver -s "$strategy" -debug_force DEBUG -inputformat nbac -debug DEBUG

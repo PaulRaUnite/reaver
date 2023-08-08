@@ -1,3 +1,10 @@
-*
-!trunk/
-!vendor/
+.idea/
+accelJordan/
+examples/
+phd_examples/
+node_modules/
+.esy/
+_esy/
+Dockerfile
+build_image.sh
+run.sh

@@ -15,15 +15,15 @@ let bouncingball_step self (z_24, z_22) (lx_19, lv_16) d_1 x0_5 v0_4
   then v0_4
   else
     if z_22
-    then Pervasives.( *. ) (-0.6) lv_17
+    then (-0.6) *. lv_17
     else
-      if Pervasives.on z_24 (Pervasives.(<) (Pervasives.(~-.) v_12) eps_2)
+      if on z_24 ((<) ((~-.) v_12) eps_2)
       then 0.
       else lv_17 in
   let dx_21 = if d_1 then lx_20 else v_12 in
   let dv_18 = if d_1 then v_12 else (-9.81) in
-  let upz_23 = Pervasives.(~-.) lx_20 in
-  let upz_25 = Pervasives.(~-.) lx_20 in
+  let upz_23 = (~-.) lx_20 in
+  let upz_25 = (~-.) lx_20 in
   self.init_30 <- false;
   ((upz_25, upz_23), (dx_21, dv_18), (false, lx_20))
 

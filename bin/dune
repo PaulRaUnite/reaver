@@ -1,0 +1,5 @@
+(executable
+  (name main)
+  (public_name reaver)
+  (libraries reaver)
+  (flags (:standard -w -50-27-32 -annot -g)))
