@@ -1,0 +1,29 @@
+(* affine derivative closure vs. abstract acceleration 
+
+   inferred invariants:
+     abstract acceleration: rAB;rAS;rAF;aA
+       0<=x2 and x2<=x1 and x1<=10
+
+     affine derivative closure: (not implemented yet)
+       x1>=0 and x2<=10
+*)
+
+state
+  x1,x2 : int;
+
+input
+  bi : bool;
+
+transition
+  x1' = if x1<=9 then x1+1 else x1; 
+  x2' = if x1<=9 and x2<=9 then 
+          if bi then x2+1 
+          else 0
+        else 
+          if x1<=9 and x2>9 then 0
+          else 
+            if x1>9 and x2<=9 then x2+1 
+            else x2;
+
+initial x1=0 and x2=0;
+invariant true;

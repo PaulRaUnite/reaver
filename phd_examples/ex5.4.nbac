@@ -1,0 +1,26 @@
+(* abstract acceleration: polyhedral backward translation 
+   
+   rAB;rAS;rAF;aA:b
+
+   inferred invariant: 
+     0<=x and x<=6 and 0<=y and y<=5 and -x+y<=2 and 4x-3y<=12
+*)
+
+state
+  x,y : real;
+
+input
+  xi : real;
+
+local
+  g : bool;
+
+definition 
+  g = x+2y<=10 and 0<=x and x<=4 and y>=0 and 1<=xi and xi<=2;
+  
+transition
+  x' = if g then x+1 else x; 
+  y' = if g then y+xi else y;
+
+initial true;
+final 3<=x and x<=6 and 4<=y and y<=5;

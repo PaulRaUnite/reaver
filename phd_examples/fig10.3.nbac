@@ -1,0 +1,29 @@
+(* thermostat hybrid automaton 
+
+   pIF;pE:v=on;rT
+*)
+
+state
+  x : real;
+  init,ok : bool;
+  on : bool;
+
+input
+  x0,xi : real;
+
+transition
+init' = false;
+
+on' = if init then true else
+      if on and x>=20 then false else
+      if not on and x<=18 then true else on;
+
+x' = if init then x0 else x;
+.x = if on and x<=22 then 30+xi-x else 
+     if not on and x>=16 then xi-x else 0;
+
+ok' = if init then true else ok and 16<=x and x<=22;
+
+initial init;
+assertion 18<=x0 and x0<=20 and 0<=xi and xi<=10;
+invariant init or ok;

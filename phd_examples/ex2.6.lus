@@ -1,0 +1,21 @@
+(* observer example in Lustre *)
+
+node program(xi:int) returns (x:int);
+let
+  x = 1 -> pre x*xi;
+tel
+
+node property(x,xi:int) returns (ok:bool);
+var t:int;
+let
+  t = 1 -> pre t + 1;
+  ok = true -> pre ok and ((t<=8) => (1<=x and x<=16*t));
+tel
+
+node system(xi:int) returns (ok:bool);
+var x:int;
+let
+  x = program(xi);
+  assert 1<=xi and xi<=2;
+  ok = property(x,xi);
+tel

@@ -1,0 +1,30 @@
+(* hybrid max-strategy iteration 
+
+   inferred invariant: pIF;pE;rT;aHM:d={TE:t={-x,x+y,x-y}}
+     x>=0 and x+y<=4 and x-y<=-1
+*)
+
+state
+  x,y : real;
+  init,ok : bool;
+  b : bool;
+
+transition
+init' = false;
+
+b' = if init then true else
+     if b and x+y>=4 then false else 
+     if not b and x-y>=-1 then true else b;
+
+x' = if init then 0 else x;
+.x = if b and x+y<=4 then 1 else 
+     if not b and x-y<=-1 then -x else 0;
+
+y' = if init then 2 else y;
+.y = if b and x+y<=4 then y else 
+     if not b and x-y<=-1 then -1 else 0;
+
+ok' = true;
+
+initial init;
+invariant init or ok;

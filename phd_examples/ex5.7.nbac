@@ -1,0 +1,29 @@
+(* affine derivative closure vs. abstract acceleration 
+
+   inferred invariants:
+     abstract acceleration: rAB;rAS;rAF;aA
+       x1+x2>=1 and x1-2x2<=1 and x1-x2<=3 and x2<=3 and x1-x2>=-1
+
+     affine derivative closure: (not implemented yet)
+       x1+x2>=1 and x1-2x2<=1 and x1-x2<=3 and x2<=3 and x1-x2>=-1
+*)
+
+state
+  x1,x2 : real;
+
+input
+  xi :  real;
+
+local
+  g : bool;
+
+definition 
+  g = x1<=4 and x2<=4;
+  
+transition
+  x1' = if g then x1+xi+1 else x1; 
+  x2' = if g then xi+2 else x2; 
+
+initial x1<=1 and x2<=1 and x1+x2>=1;
+assertion 0<=xi and xi<=1;
+invariant true;

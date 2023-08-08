@@ -1,0 +1,32 @@
+(* thermostat hybrid automaton 
+
+   inferred invariants: 
+     polyhedral time-elapse: pIF;rT;aH:ws=5
+       17<=x and x<=23
+*)
+
+state
+  x,n : real;
+  init,ok : bool;
+  on : bool;
+
+input
+  n0 : real;
+
+transition
+init' = false;
+
+on' = if init then true else
+      if on and x>=n+1 then false else
+      if not on and x<=n-1 then true else on;
+
+n' = if init then n0 else n;
+x' = if init then n0 else x;
+.x = if on and x<=n+1 then n+20-x else 
+     if not on and x>=n-1 then -x else 0;
+
+ok' = true;
+
+initial init;
+assertion 18<=n0 and n0<=22;
+invariant init or ok;

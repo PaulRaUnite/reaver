@@ -1,0 +1,15 @@
+(* delayed widening
+     aS:ws=1,wd=0
+     aS:ws=3,wd=0
+     aS:ws=5,wd=0
+*)
+
+state
+  x,y : real;
+  
+transition
+  x' = if y>=0 then x+y+1 else 0;
+  y' = if y>=0 then y+1 else 0;
+
+initial x=0 and y=0;
+invariant true;

@@ -1,0 +1,16 @@
+(* simple example for standard analysis
+
+   interval analysis with delayed widening 2 and 1 descending iteration:
+      aS:d=I,ws=2,wd=1
+
+   inferred invariant: 0<=x and x<=10
+ *)
+
+state
+  x : real;
+  
+transition
+  x' = if x<=9 then x+1 else 0; 
+
+initial x=0;
+invariant true;

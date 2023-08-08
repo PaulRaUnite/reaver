@@ -1,0 +1,31 @@
+(* thermostat
+
+   inferred invariants: 
+     relational abstractions: pIF;tR;rT;aS:ws=5
+       18<=x and x<=20
+*)
+
+state
+  x : real;
+  init,ok : bool;
+  on : bool;
+
+input
+  x0 : real;
+
+transition
+init' = false;
+
+on' = if init then true else
+      if on and x>=20 then false else
+      if not on and x<=18 then true else on;
+
+x' = if init then x0 else x;
+.x = if on and x<=20 then 40-x else 
+     if not on and x>=18 then -x else 0;
+
+ok' = if init then true else ok and 17<=x and x<=21;
+
+initial init;
+assertion x0=19;
+invariant init or ok;

@@ -1,0 +1,38 @@
+(* widening vs. abstract acceleration 
+
+   inferred invariants in (not b):
+     widening: pE;rT;aS:ws=20
+       0<=x1 and 3<=x3 and 1<=x1+x2
+   
+     abstract acceleration: pE;rT;rAB;rAS;rAF;rAD;aA:ws=5
+       (over-approximated)
+       0<=x1 and x1<=12 and 0<=x2 and x2<=3 and 3<=x3 and x3<=21 and 1<=x1+x2
+
+     abstract acceleration: pE;rT;rAB;rAS;rAF;rAD;aA:ws=1
+       (over-approximated)
+       0<=x1 and x1<=57 and -15<=x2 and x2<=42 and 3<=x3 and x3<=21 and 1<=x1+x2
+*)
+
+state
+  x1,x2,x3 : int;
+  b : bool;
+
+input
+  xi :  real;
+
+local
+  g : bool;
+
+definition 
+  g = 2x1+2x2<=x3;
+  
+transition
+  b' = if b and x3<=20 then false else 
+       if not b and not g then true else b;
+  x1' = if not b and g then x1+xi+1 else x1; 
+  x2' = if not b and g then xi else x2; 
+  x3' = if not b and not g then x3+1 else x3; 
+
+initial b and 0<=x1 and 1<=x2 and x1+x2<=2 and x3=3;
+assertion 0<=xi and xi<=1;
+invariant true;

@@ -1,0 +1,17 @@
+(* descending iteration fails:
+     aS
+*)
+
+state
+  x : real;
+
+input
+  bi : bool;
+  
+transition
+x' = if bi then
+       if x<=99 then x+1 else 0
+     else x;
+
+initial x=0;
+invariant true;

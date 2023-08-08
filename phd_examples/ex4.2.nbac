@@ -1,0 +1,23 @@
+(* abstract acceleration: translations
+
+   rAB;rAS;rAF;aA
+
+   inferred invariant:
+     0<=x and 0<=y and y<=4 and -x+2y>=-1 and x+y<=7;
+*)
+
+state
+  x,y : real;
+
+local
+  g : bool;
+
+definition 
+  g = x+y<=4 and y<=3;
+  
+transition
+  x' = if g then x+2 else x; 
+  y' = if g then y+1 else y;
+
+initial  0<=x and x<=1 and 0<=y and y<=4;
+invariant true;

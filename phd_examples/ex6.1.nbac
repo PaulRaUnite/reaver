@@ -1,0 +1,26 @@
+(* dependencies on unmodified variables 
+
+   rT;rAB;rAF;aA
+
+   inferred invariant:
+     0<=x2 and x1>=x2 and x1<=7 and x1+6x2<=28
+*)
+
+state
+  x1,x2 : real;
+
+input
+  xi :  real;
+
+local
+  g : bool;
+
+definition 
+  g = x1+x2<=7;
+  
+transition
+  x1' = if g then x1+x2 else x1; 
+  x2' = x2;
+
+initial 0<=x1 and x1<=4 and x2=x1;
+invariant true;

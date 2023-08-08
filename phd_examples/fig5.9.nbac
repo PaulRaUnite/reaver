@@ -1,0 +1,25 @@
+(* standard abstract interpretation vs. abstract acceleration 
+
+   inferred invariants:
+     abstract acceleration: rAB;rAS;rAF;aA
+       -x-2y+15>=0; -x+7>=0; -x+y+4>=0; y>=0; x>=0; 2x-5y+15>=0
+
+     Kleene iteration (with delayed widening): aS:ws=10
+       -x-2y+15>=0; -x+7>=0; -x+y+4>=0; y>=0; x>=0
+*)
+
+state
+  x,y : real;
+
+local
+  g : bool;
+
+definition 
+  g = 2<=x and x<=6 and 0<=y and 2y+x<=12;
+  
+transition
+x' = if g then x+1 else x; 
+y' = if g then y+1 else y;
+
+initial 0<=x and x<=4 and 0<=y and x+2y<=6;
+invariant true;

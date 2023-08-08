@@ -1,0 +1,27 @@
+(* abstract acceleration: translation with inputs and simple guards 
+
+   rAB;rAS;rAF;aA
+
+  inferred invariant:
+    x<=0 and y-x<=1 and x+y<=9 and 4y-2x<=9 and 2x-3y<=0
+*)
+
+state
+  x,y : real;
+
+input
+  xi :  real;
+
+local
+  g : bool;
+
+definition 
+  g = x+y<=4;
+  
+transition
+  x' = if g then x+2xi-1 else x; 
+  y' = if g then y+xi else y;
+
+initial 0<=x and x<=y and y<=1;
+assertion 1<=xi and xi<=2;
+invariant true;

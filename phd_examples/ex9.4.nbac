@@ -1,0 +1,41 @@
+(* logico-numerical max-strategy iteration 
+
+   inferred invariants:
+     standard analysis: pIF;pE:v=b0;rT;aS
+       top
+
+     logico-numerical max-strategy iteration: pIF;pE:v=b0;rT;aL:d={TE:t=INT}
+       b1 and 0<=x and x<=100
+
+*)
+
+state
+  x : int;
+  init,ok : bool;
+  b0,b1,b2 : bool;
+
+transition
+init' = false;
+
+b0' = if init then false else
+      if not b0 and x>=20 then true else
+      if b0 and x>=100 then false else b0;
+b1' = if init then true else
+      if not b0 then x<=100 else b1;
+b2' = if init then true else
+      if b0 and x<=99 then not b2 else b2;
+
+x' = if init then 0 else
+     if not b0 then 
+       if x<=19 then 
+         if b1 then x+1 else x-1
+       else x
+     else
+       if x<=99 then 
+         if b2 then x+1 else x 
+       else x-100;
+
+ok' = true;
+
+initial init;
+invariant init or ok;

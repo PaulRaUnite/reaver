@@ -1,0 +1,37 @@
+(* partitioning by numerically defined continuous modes 
+ 
+   pIF;pE:v=q;rT;pMHN;rT
+*)
+
+state
+  x1,x2,y1,y2,v1,v2,w1,w2 : real;init,ok,q : bool;
+
+transition
+init' = false;
+
+.x1 = if q and x1<x2 or not q and x1<=x2 then v1 else 0;
+.x2 = if q and x1<x2 or not q and x1<=x2 then v2 else 0;
+.y1 = if q and x1<x2 or not q and x1<=x2 then w1 else 0;
+.y2 = if q and x1<x2 or not q and x1<=x2 then w2 else 0;
+
+x1' = if init then 0 else x1; 
+x2' = if init then 3 else x2; 
+
+y1' = if init then 6 else y1; 
+y2' = if init then 4 else y2; 
+
+v1' = if init then 2 else 
+      if not q and x1>=x2 then w1 else v1;
+v2' = if init then -3 else v2; 
+
+w1' = if init then -4 else 
+      if not q and x1>=x2 then v1 else w1;
+w2' = if init then -4 else w2; 
+
+q' = if init then true else 
+     if q and x1<x2 then false else
+     if not q and x1>=x2 then true else q;
+ok' = if init then true else ok and x1<=x2;
+
+initial init;
+invariant init or ok;

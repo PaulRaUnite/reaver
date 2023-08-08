@@ -1,0 +1,35 @@
+(* sum over xi for 10 steps after bi=true 
+
+   pIF;pE;rT;aS
+
+   inferred invariant:
+     not b and x1>=0 and x2>=0 or 
+     b and 0<=x2<=9 and x1>=x2
+*)
+
+state
+  x1,x2 : int;
+  init,ok : bool;
+  b : bool;
+
+input
+  xi :  real;
+  bi : bool;
+
+transition
+init' = false;
+
+b' = if init then false else
+     if not b and bi then true else
+     if b and x2>=9 then false else b;
+
+x1' = if init then 0 else
+      if b then x1+xi else x1; 
+
+x2' = if init or bi then 0 else x2+1;
+
+ok' = true;
+
+initial init;
+assertion 1<=xi and xi<=3;
+invariant init or ok;

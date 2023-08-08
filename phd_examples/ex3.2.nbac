@@ -1,0 +1,28 @@
+(* forward analysis:
+     pE;rT;aS:d=I
+
+   backward analysis:
+     pE;rT;aS:d=I,b
+*)
+
+typedef Loc = enum{L1,L2,L3};
+
+state
+  x,y : int;
+  l : Loc;
+  
+transition
+
+l' = if l=L1 then
+       if x<=9 then L2 else L3
+     else
+       if l=L2 and y>=10 then L1
+       else l;
+
+x' = if l=L2 and y>=10 then x+1 else x; 
+
+y' = if l=L1 and x<=9 then 0 else
+     if l=L2 and y<=9 then y+1 else y;
+
+initial l=L1 and x=0 and y=0;
+invariant x<=10 or y<=10;

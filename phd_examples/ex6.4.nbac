@@ -1,0 +1,22 @@
+(* rotation with translation by rotated variables 
+
+   (not yet implemented)
+*)
+
+state
+  x1,x2,x3,x4 : real;
+
+local
+  g : bool;
+
+definition 
+  g = -9<=x1+x2 and x1+x2<=9 and -5<=x1 and x1<=10;
+  
+transition
+  x1' = if g then -x2+x3 else x1; 
+  x2' = if g then x1+x4 else x2; 
+  x3' = if g then -x4 else x3; 
+  x4' = if g then x3 else x4; 
+
+initial x1=0 and x2=0 and x3=1 and x4=2;
+invariant true;

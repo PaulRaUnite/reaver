@@ -1,0 +1,23 @@
+(* bouncing ball 
+
+   pIF;rT
+*)
+
+state
+  y,v : real;
+  init,ok : bool;
+  
+transition
+init' = false;
+
+y' = if init then 5 else y;
+.y = v;
+
+v' = if init then 0 else
+     if v<=0 and y=0 then -0.6*v else v; 
+.v = -9.81;
+
+ok' = true;
+
+initial init;
+invariant init or ok;

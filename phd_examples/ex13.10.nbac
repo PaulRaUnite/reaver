@@ -1,0 +1,26 @@
+(* partitioning by numerically defined modes 
+
+   pIF;pQ;rT;pMHN;rT
+*)
+
+state
+  x,n : real;
+  init,ok : bool;
+
+input
+  xi : real;
+
+transition
+init' = false;
+
+.x = n-x;
+x' = if init then 19 else x; 
+n' = if init then 40+xi else
+     if up(20-x) then xi else
+     if up(x-18) then 40+xi else n;
+
+ok' = if init then true else ok and 17<=x and x<=21;
+
+initial init;
+assertion -5<=xi and xi<=5;
+invariant init or ok;
