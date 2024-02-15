@@ -1,0 +1,23 @@
+(library
+ (name bdd)
+ (public_name bddapron.bdd)
+ (libraries cudd camllib)
+ (modules
+  cond
+  decompose
+  domain0
+  domain1
+  enum
+  env
+  expr0
+  expr1
+  int
+  normalform
+  output
+  reg)
+)
+
+(env
+ (dev
+  (flags
+   (:standard -warn-error -A))))

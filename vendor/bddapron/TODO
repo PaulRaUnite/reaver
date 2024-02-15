@@ -1,0 +1,7 @@
+
+- dans bdddomain0 et mtbdddomain0: repérer les contraintes non linéaires, et refaire une passe dans meet_condition (déjà fait dans bdddomain0).
+
+- idem pour les affectations ?
+
+* But: rendre bdddomain et mtbdddomain0 équivalents
+

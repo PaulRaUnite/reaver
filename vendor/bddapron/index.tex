@@ -1,0 +1,82 @@
+\documentclass[a4paper,11pt]{article}
+
+\htmlcss{style.css}
+\htmltitle{Bddapron}
+\htmlpanel{0}
+\setcounter{htmlautomenu}{1}
+\setcounter{htmldepth}{1}
+
+\usepackage{hyperlatex}
+\usepackage{xspace}
+%\usepackage{frames}
+
+\newcommand{\ocaml}{\xlink{OCaml}{http://www.caml.org}\xspace}
+\newcommand{\cudd}{\xlink{CUDD}{http://vlsi.colorado.edu/\~{}fabio/CUDD/cuddIntro.html}\xspace}
+\newcommand{\mlcuddidl}{\xlink{MLCuddIDL}{../../mlxxxidl-forge/mlcuddidl/index.html}\xspace}
+\newcommand{\mlgmpidl}{\xlink{MLGMPIDL}{../../mlxxxidl-forge/mlgmpidl/index.html}\xspace}
+\newcommand{\camllib}{\xlink{Camllib}{../camllib/index.html}\xspace}
+\newcommand{\camlidl}{\xlink{CamlIDL}{http://caml.inria.fr/camlidl/}\xspace}
+\newcommand{\apron}{\xlink{APRON}{http://apron.cri.ensmp.fr/library/}\xspace}
+\newcommand{\gmp}{\xlink{GMP}{http://gmplib.org\xspace}}
+\newcommand{\mpfr}{\xlink{MPFR}{http://www.mpfr.org/}\xspace}
+\newcommand{\findlib}{\xlink{FINDLIB}{http://projects.camlcity.org/projects/findlib.html}\xspace}
+
+
+\title{Bddapron}
+\date{}
+\author{}
+
+\begin{document}
+
+%\xmlattributes*{img}{align="left"}
+%\xlink{\htmlimg{http://devel.inria.fr/logo_inria.png}{INRIA}}{http://www.inria.fr}
+\xlink{Up}{../index.html}
+\maketitle
+
+\section{About}
+
+This library is actually composed of two sub-libraries:
+\begin{itemize}
+\item Bdd: higher-level interface to \cudd (compared to
+  \mlcuddidl):
+  \begin{itemize}
+  \item Manipulation of formulas and expressions of various finite types:
+    Boolean, bounded integers, enumerated types;
+  \item BDDs as an abstract domain for such datatypes.
+  \end{itemize}
+\item Bddapron:
+  \begin{itemize}
+  \item Formulas and expressions mixing finite types and
+    numerical types, represented as BDDs/MTBDDs (\textit{e.g.,}
+    \texttt{if x>=y-3 and b then x-y else x-2*y*y}), with
+  \item Abstract domains combining finite-type and numerical
+    variables, by combining BDDs/MTBDDs (for finite-type variables) and \apron domains (for numerical variables)
+  \end{itemize}
+\end{itemize}
+A short presentation in \xlink{french}{presentation-bddapron.pdf}
+
+You will need \camlidl and \findlib.
+
+Both sublibraries require the \camllib utility library and the
+\mlcuddidl BDD library/binding. The Bddapron sublibrary
+requires in addition the \apron library and its dependencies
+(\gmp, \mpfr, \mlgmpidl).
+
+\section{License}
+
+Bddapron is released under the LGPL license.
+
+\section{Download}
+Current version: 2.2.0
+\begin{itemize}
+\item \xlink{Subversion repository: BDDAPRON alone}{http://gforge.inria.fr/plugins/scmsvn/viewcvs.php/pkg/bddapron/?root=bjeannet} (see \xlink{Up}{../index.html} for the organisation of the repository)
+\item \xlink{Subversion repository: BDDAPRON together with dependencies camllib, mlcuddidl, mlgmpidl, apron}{http://gforge.inria.fr/plugins/scmsvn/viewcvs.php/dist/bddapron-dist/?root=bjeannet} (see \xlink{Up}{../index.html} for the organisation of the repository)
+\end{itemize}
+
+\section{Documentation}
+\begin{itemize}
+\item \xlink{On-line}{html/index.html}
+\item \xlink{PDF}{bddapron.pdf}
+\end{itemize}
+
+\end{document}

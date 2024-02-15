@@ -1,0 +1,17 @@
+description = "Logico-numerical domain(s) based on BDDs and APRON"
+version = "@VERSION@"
+requires = "bddapron.bdd"
+package "bdd" (
+requires = "camllib cudd"
+archive(byte) = "bdd.cma"
+archive(byte,debug) = "bdd.d.cma"
+archive(native) = "bdd.cmxa"
+archive(native,gprof) = "bdd.p.cmxa"
+)
+package "bddapron" (
+requires = "bddapron.bdd gmp apron"
+archive(byte) = "bddapron.cma"
+archive(byte,debug) = "bddapron.d.cma"
+archive(native) = "bddapron.cmxa"
+archive(native,gprof) = "bddapron.p.cmxa"
+)

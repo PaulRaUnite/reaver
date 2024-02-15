@@ -1,0 +1,5 @@
+<**/*.ml> or <**/*.mli> or <**/*.cm{i,o,x}> or <bdd.*>: package(cudd), package(camllib)
+<bddapron/*.ml> or <bddapron/*.mli> or <bddapron/*.cm{i,o,x}> or <bddapron.*>: package(apron)
+<bdd/*.cmx>: for-pack(Bdd)
+<bddapron/*.cmx>: for-pack(Bddapron)
+true: annot

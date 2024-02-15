@@ -1,0 +1,37 @@
+About
+=====
+
+- Manipulation of formula and expressions involving
+  Boolean, enumerated, bounded integer variables,
+  using BDDs
+
+- BDDs as an "abstract" domain
+
+Required
+========
+C  libraries: 
+  CUDD (http://vlsi.colorado.edu/~fabio/CUDD/)
+C/OCaml libraries
+  mlcuddidl (http://gforge.inria.fr/projects/mlxxxidl/)
+OCaml libraries
+  camllib (http://gforge.inria.fr/projects/bjeannet/)
+
+To configure
+============
+- copy Makefile.config.model into Makefile.config
+- set properly the flags (mainly directories).
+
+To compile the library:
+=======================
+make all        # for bytecode and nativecode compilation of formula
+make formulatop # for a custom toplevel
+make formularun # for a custom bytecode interpreter
+make formula.pdf # doc
+make html        # doc
+...
+
+see Makefile
+
+To install the library:
+=======================
+make install

@@ -1,0 +1,48 @@
+# -*- mode: makefile -*-
+
+OCAMLFIND = ocamlfind
+
+######################################################################
+# Directories
+######################################################################
+
+# Where to find OCAML library
+#
+CAML_DIR = $(shell ocamlc -where)
+
+# Where to find CAMLIDL's library (usually the same as $(CAML_DIR), or
+# the result of `ocamlfind query camlidl`).
+CAMLIDL_DIR = $(CAML_DIR)
+# CAMLIDL_DIR = $(shell $(OCAMLFIND) query camlidl)
+
+##################################################
+# OCaml and related
+
+# optional, internal use O
+#OCAMLPACK=ocamlpack
+
+OCAMLC = ocamlc.opt
+OCAMLOPT = ocamlopt.opt
+OCAMLDEP = ocamldep
+OCAMLLEX = ocamllex.opt
+OCAMLYACC = ocamlyacc
+OCAMLDOC = ocamldoc
+OCAMLMKTOP = ocamlmktop
+OCAMLMKLIB = ocamlmklib
+
+CAMLIDL = camlidl
+
+# ocamlc compilation flags
+OCAMLFLAGS = -annot -g
+# ocamlopt compilation flags
+OCAMLOPTFLAGS = -annot -inline 20
+
+##################################################
+# Other
+
+SED=sed
+AR=ar
+RANLIB = ranlib
+LATEX=latex
+DVIPDF=dvipdf
+MAKEINDEX=makeindex

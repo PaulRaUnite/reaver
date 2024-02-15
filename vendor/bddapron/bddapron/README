@@ -1,0 +1,42 @@
+About
+=====
+
+Extend the FORMULA library with numerical expression and numerical APRON
+abstract domains.
+
+Can be seen more simply as an extension of the APRON abstract domain for
+dealing with Boolean and finite-type variables, in addition to numerical
+variables.
+
+- Combined finite-type and numerical expressions 
+
+- Abstract domain for finite type and numerical types, implemented as MTBDDs
+  with Boolean decisions and APRON abstract values as leaves.
+
+Required
+========
+C  libraries: 
+  GMP (http://gmplib.org)
+  MPFR (http://www.mpfr.org/)
+  CUDD (http://vlsi.colorado.edu/~fabio/CUDD/)
+   only for bddapron:
+  GMP (http://gmplib.org)
+  MPFR (http://www.mpfr.org/)
+  APRON (http://apron.cri.ensmp.fr/library/)
+C/OCaml libraries
+  mlcuddidl, mlgmpidl (only for bddapron) (http://gforge.inria.fr/projects/mlxxxidl/)
+OCaml libraries
+  camllib (http://gforge.inria.fr/projects/bjeannet/pkg/camllib)
+
+To configure
+============
+- copy Makefile.config.model into Makefile.config
+- set properly the flags (mainly directories).
+
+To compile the library:
+=======================
+make all # for bytecode and nativecode compilation of bddapron
+
+To install the library:
+=======================
+make install

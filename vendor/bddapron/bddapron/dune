@@ -1,0 +1,13 @@
+(library
+ (name bddapron)
+ (public_name bddapron.bddapron)
+ (libraries cudd bdd num gmp apron))
+
+(env
+ (dev
+  (flags
+   (:standard -warn-error -A))))
+
+(ocamllex lex)
+
+(ocamlyacc yacc)

@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# Use bash for upper-case operation.
+
+if (( ${BASH_VERSINFO[0]} >= 4 )); then
+    uc1 () { echo "${1^}"; }
+elif command -v gsed >/dev/null; then
+    uc1 () { echo "$1" | gsed -e 's/.*/\u&/'; }
+else
+    # hope this one will work...
+    uc1 () { echo "$(tr '[:lower:]' '[:upper:]' <<< "${1:0:1}")${1:1}"; }
+fi;
+
+# command line (very primitive...)
+if test $1 != "-o"; then
+    echo "ocamlpack: usage: ocamlpack -o file.ml* (-intro file.odoc) (-level <n>) file1.ml* file2.ml* ..."
+    exit 1
+fi
+shift
+out=$1
+shift
+introfile=0
+if test $1 = "-intro"; then 
+    shift; introfile=$1; shift; 
+fi
+level=-1
+if test $1 = "-level"; then 
+    shift; level=$1; shift;
+fi
+
+# extract suffix of output file
+suffix="${out##*.}"
+if test "x$suffix" != "xml" && test "x$suffix" != "xmli"; then
+    echo "suffix of output file should be .ml or .mli";
+    exit 1
+fi
+
+# prepare output
+rm -f $out
+if test $introfile != 0; then
+    cat $introfile >>$out
+fi
+echo "" >>$out
+
+# iterate on input module,
+for file in $*; do
+    echo "" >>$out
+    suffixf="${file##*.}";
+    if test "x$suffix" != "x$suffixf"; then
+	{ echo "ocamlpack: suffix .$suffix expected for file $file"; exit 1; };
+    fi
+    module="$(basename "$file")";
+    module="$(uc1 "${module%.*}")";
+    firstline=`head -n 1 $file`;
+    if [[ $firstline = \(\*\** ]]; then
+	if test $level != -1; then
+	    content=`echo $firstline | sed -e 's/.*([*][*]\(.*\)[*]).*/\1/g'`
+	    echo '(** {% \\chapter{Module {\\tt' "$module}: $content} %} *)" >>$out;
+	    echo "" >>$out; echo $firstline >>$out;
+	else
+	    echo $firstline >>$out;
+	fi;
+    fi
+    if test "x$suffix" = "xml"; then
+	echo "module $module = struct" >>$out;
+    else
+	echo "module $module : sig" >>$out;
+    fi
+    if [[ $firstline != \(\*\** ]]; then
+	echo $firstline >>$out;
+    fi
+    tail -n +2 $file >>$out
+    echo "end" >>$out
+done
