@@ -1,0 +1,10 @@
+(library
+  (name camllib)
+  (public_name camllib)
+  (wrapped false)
+  (modules print sette pSette mappe pMappe hashhe pHashhe setteI setteS mappeI mappeS hashheI hashheIB hashheS dMappe pDMappe dHashhe pDHashhe setList multiSetList ilist fGraph1 fGraph sHGraph pSHGraph symbol union statistic time rational parse )
+  (libraries stdlib-shims))
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))
