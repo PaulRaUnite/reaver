@@ -413,6 +413,10 @@ let str_to_strategy env str =
     ss
 
 
+let is_empty l = match l with 
+  | [] -> true
+  | _ -> false
+
 (******************************************************************************)
 (* run the strategy *)
 (******************************************************************************)
@@ -442,22 +446,20 @@ let run env strategy cfprog =
            ("analysis '"^description^"' returned ") result;
          Log.info_o logger (print_result) "analysis result: " ();
          (* VerifUtil.checkres env cfprog direction anres*)
-         if result && !check_property
-            || (match tailstrats with |[] -> true |_ -> false) 
-            then 
-         begin
-           if !print_overall then 
-             VerifUtil.print_overall_reach env cfprog get_anres; 
-           (result,get_anres,cfprog)
-         end
+         if result && !check_property || is_empty tailstrats then 
+            begin
+              if !print_overall then 
+                VerifUtil.print_overall_reach env cfprog get_anres; 
+              (result,get_anres,cfprog)
+            end
          else
-         begin
-           (* Env.cudd_reorder env; *)
-           let cfprog = VerifUtil.refine env cfprog (refine_loc) in
-           display_cfg_size cfprog.Program.c_cfg;            
-           Log.debug_o logger (Cfg.print_short env) "Refined CFG: " 
-             cfprog.Program.c_cfg;
-           do_run tailstrats cfprog get_anres
-        end
+            begin
+              (* Env.cudd_reorder env; *)
+              let cfprog = VerifUtil.refine env cfprog (refine_loc) in
+              display_cfg_size cfprog.Program.c_cfg;            
+              Log.debug_o logger (Cfg.print_short env) "Refined CFG: " 
+                cfprog.Program.c_cfg;
+              do_run tailstrats cfprog get_anres
+            end
   in
   do_run strategy cfprog (fun () -> Analysis.bddapron_res_empty)

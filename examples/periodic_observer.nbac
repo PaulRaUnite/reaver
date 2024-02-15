@@ -1,0 +1,20 @@
+state
+    init: bool;
+    ok: bool;
+    obs_r: int;
+    r: int;
+    r_1: int;
+input
+    a: bool;
+    b: bool;
+    i: bool;
+    m: bool;
+transition
+    init' = false;
+    obs_r' = if init then 0 else ((if obs_r >= 6 then 0 else obs_r) + (if m then 1 else 0));
+    ok' = if init then true else (ok and (((obs_r >= 5) = (m = i)) and ((obs_r < 5) = (not i))));
+    r' = if init then 0 else ((if r >= 2 then 0 else r) + (if m then 1 else 0));
+    r_1' = if init then 0 else ((if r_1 >= 3 then 0 else r_1) + (if m then 1 else 0));
+assertion init or ((((r = 1) and (m = a)) or (not (r = 1) and not a)) and (((r_1 = 2) and (m = b)) or (not (r_1 = 2) and not b)) and ((a and b) = i));
+initial init;
+final not (init or ok);

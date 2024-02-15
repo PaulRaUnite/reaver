@@ -1,0 +1,6 @@
+digraph G {
+  
+  -1 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-1) init and not ok or ok"];
+  -2 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-2) not init and not ok"];
+  
+}

@@ -1,0 +1,16 @@
+digraph G {
+  
+  -3 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-3) not init and ok"];
+  -1 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-1) init"];
+  -2 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-2) not init and not ok"];
+  3 [shape=plaintext,fontsize=10,height=0.01,width=0.01,label="(3) \ni and obs_r>=5 or not i and m and obs_r<=4 -->\ninit'=false; obs_r'={ obs_r+1 IF m and obs_r<=5, obs_r IF not m and obs_r<=5, 1 IF m and obs_r>=6, 0 IF not m and obs_r>=6 }; ok'=m; r'={ r+1 IF m and r<=1, r IF not m and r<=1, 1 IF m and r>=2, 0 IF not m and r>=2 }; r_1'={ r_1+1 IF m and r_1<=2,r_1 IF not m and r_1<=2,1 IF m and r_1>=3,0 IF not m and r_1>=3 }; "];
+  5 [shape=plaintext,fontsize=10,height=0.01,width=0.01,label="(5) \nnot i and obs_r>=5 or not m and obs_r<=4 or i and m and obs_r<=4 -->\ninit'=false; obs_r'={ obs_r+1 IF m and obs_r<=5, obs_r IF not m and obs_r<=5, 1 IF m and obs_r>=6, 0 IF not m and obs_r>=6 }; ok'=false; r'={ r+1 IF m and r<=1, r IF not m and r<=1, 1 IF m and r>=2, 0 IF not m and r>=2 }; r_1'={ r_1+1 IF m and r_1<=2,r_1 IF not m and r_1<=2,1 IF m and r_1>=3,0 IF not m and r_1>=3 }; "];
+  4 [shape=plaintext,fontsize=10,height=0.01,width=0.01,label="(4) \ninit'=false; obs_r'=0; ok'=true; r'=0; r_1'=0; "];
+  -3 -> 3;
+  3 -> -3;
+  -3 -> 5;
+  5 -> -2;
+  -1 -> 4;
+  4 -> -3;
+  
+}

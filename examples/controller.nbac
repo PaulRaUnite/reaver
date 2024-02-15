@@ -20,4 +20,4 @@ transition
 
 assertion speed_diff <= 4 and speed_diff >= -4 and (not plus or (speed_diff > 0)) and (not minus or (speed_diff < 0));
 initial init;
-invariant init or ok;
+final not(init or ok);

@@ -1,0 +1,16 @@
+digraph G {
+  
+  -3 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-3) not init and ok"];
+  -1 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-1) init"];
+  -2 [shape=box,fontsize=10,height=0.01,width=0.01,label="(-2) not init and not ok"];
+  3 [shape=plaintext,fontsize=10,height=0.01,width=0.01,label="(3) \ncount<=14 -->\ncount'={ count+1 IF speed>=8 and speed>=13 or speed<=7, 0 IF speed>=8 and speed<=12 }; init'=false; ok'=true; speed'={ 0 IF -speed-speed_diff-1>=0,speed+speed_diff IF speed+speed_diff>=0 }; "];
+  5 [shape=plaintext,fontsize=10,height=0.01,width=0.01,label="(5) \ncount>=15 -->\ncount'={ count+1 IF speed>=8 and speed>=13 or speed<=7, 0 IF speed>=8 and speed<=12 }; init'=false; ok'=false; speed'={ 0 IF -speed-speed_diff-1>=0,speed+speed_diff IF speed+speed_diff>=0 }; "];
+  4 [shape=plaintext,fontsize=10,height=0.01,width=0.01,label="(4) \ncount'=0; init'=false; ok'=true; speed'=0; "];
+  -3 -> 3;
+  3 -> -3;
+  -3 -> 5;
+  5 -> -2;
+  -1 -> 4;
+  4 -> -3;
+  
+}

@@ -1,0 +1,26 @@
+state
+    init: bool;
+    ok: bool;
+    i_i: int;
+    m_i: int;
+    r: int;
+    r_1: int;
+    r_2: int;
+input
+    a: bool;
+    b: bool;
+    c: bool;
+    gc_0: bool;
+    i: bool;
+    m: bool;
+transition
+    i_i' = if init then 0 else (i_i + (if i then 1 else 0));
+    init' = false;
+    m_i' = if init then 0 else (m_i + (if m then 1 else 0));
+    ok' = if init then true else (ok and (not i or ((m_i + 1) = ((i_i + 1) * 105))));
+    r' = if init then 0 else ((if r >= 3 then 0 else r) + (if m then 1 else 0));
+    r_1' = if init then 0 else ((if r_1 >= 5 then 0 else r_1) + (if m then 1 else 0));
+    r_2' = if init then 0 else ((if r_2 >= 7 then 0 else r_2) + (if m then 1 else 0));
+assertion init or ((((r = 2) and (m = a)) or (not (r = 2) and not a)) and (((r_1 = 4) and (m = b)) or (not (r_1 = 4) and not b)) and (((r_2 = 6) and (m = c)) or (not (r_2 = 6) and not c)) and ((a and b) = gc_0) and ((c and gc_0) = i));
+initial init;
+final not (init or ok);
