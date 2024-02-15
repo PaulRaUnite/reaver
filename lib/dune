@@ -3,7 +3,11 @@
  (public_name reaver)
  (libraries cudd gmp ocamlqsopt_ex fixpoint ocamlyices bddapron.bddapron apron.apron apron.polkaMPQ apron.octMPQ apron.boxMPQ bddapron.bdd str)
  (wrapped false)
- (modules (:standard \ stratiter stratiter2 stratiter3 powerCons))
- (flags (:standard -w -50-27-32-35-8-34-6 -annot -g)))
+ (modules (:standard \ stratiter stratiter2 stratiter3 powerCons)))
+
+(env
+ (dev
+  (flags
+   (:standard -warn-error -A))))
 
 (include_subdirs unqualified)
