@@ -1,11 +1,18 @@
 (lang dune 3.6)
 
+(generate_opam_files true)
+
+(name ocamlqsopt_ex)
+
 (package
  (name ocamlqsopt_ex)
  (version 0.9.4)
+ (authors "Peter Shrammel")
+ (maintainers "Pavlo Tokariev <pavlo.tokariev@inria.fr>")
+ (synopsis "OCaml Interface to QSOpt_ex-2.5.10")
  (depends
-  (ocaml (>= 4.02))
+  (ocaml
+   (>= 4.02))
   dune
   num
-  mlgmpidl
-))
+  mlgmpidl))

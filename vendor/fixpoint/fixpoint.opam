@@ -3,7 +3,7 @@ opam-version: "2.0"
 version: "2.3.3"
 synopsis: """
 Solver for fixpoint equations on a lattice, in the context of static analysis
-and abstrat interpretation."""
+and abstrat interpretation"""
 maintainer: ["Nicolas Berthier <m@nberth.space>"]
 authors: ["Bertrand Jeannet"]
 depends: [
