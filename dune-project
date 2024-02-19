@@ -7,7 +7,7 @@
 (package
  (name reaver)
  (version 0.9.4)
- (license "GPL-3")
+ (license "GPL-3.0")
  (authors "Peter Shrammel")
  (maintainers "Pavlo Tokariev <pavlo.tokariev@inria.fr>")
  (synopsis "ReaVer is a tool framework for safety verification of discrete and hybrid systems")

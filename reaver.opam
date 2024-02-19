@@ -5,7 +5,7 @@ synopsis:
   "ReaVer is a tool framework for safety verification of discrete and hybrid systems"
 maintainer: ["Pavlo Tokariev <pavlo.tokariev@inria.fr>"]
 authors: ["Peter Shrammel"]
-license: "GPL-3"
+license: "GPL-3.0"
 homepage: "https://github.com/PaulRaUnite/reaver"
 bug-reports: "https://github.com/PaulRaUnite/reaver/issues"
 depends: [
@@ -35,5 +35,8 @@ build: [
 ]
 dev-repo: "git+https://github.com/PaulRaUnite/reaver.git"
 pin-depends: [
-  ["ocamlyices.dev" "git+https://github.com/paulraunite/ocamlyices"]
+  ["ocamlyices.0.7.4" "git+https://github.com/paulraunite/ocamlyices"]
+  ["camllib.1.4.0" "./vendor/camllib"]
+  ["fixpoint.2.3.3" "./vendor/fixpoint"]
+  ["ocamlqsopt_ex.0.9.4" "./vendor/ocamlqsopt_ex"]
 ]

@@ -8,7 +8,7 @@ For an example see test.ml
 
 To build
 
-esy build
+dune build
 
 ***
 
