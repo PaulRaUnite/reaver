@@ -4,7 +4,7 @@
 
 (package
  (name bddapron)
- (version 2.3.3)
+ (version 2.4.0)
  (authors "Bertrand Jeannet")
  (maintainers "Nicolas Berthier <m@nberth.space>")
  (synopsis "Logico-numerical domain(s) based on BDDs and APRON")

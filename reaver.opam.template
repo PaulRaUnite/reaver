@@ -3,4 +3,5 @@ pin-depends: [
   ["camllib.1.4.0" "./vendor/camllib"]
   ["fixpoint.2.3.3" "./vendor/fixpoint"]
   ["ocamlqsopt_ex.0.9.4" "./vendor/ocamlqsopt_ex"]
+  ["bddapron.2.4.0" "./vendor/bddapron"]
 ]
