@@ -1,0 +1,112 @@
+************************************************************
+************************************************************
+************************************************************
+*                LATTICE AUTOMATA LIBRARY                  *
+*          Bertrand Jeannet and Tristan Le Gall            *
+************************************************************
+************************************************************
+************************************************************
+
+
+This Objective Caml library implements the Lattice Automata which were
+described in the article "Lattice automata: a representation of
+languages over an infinite alphabet, and some applications to
+verification", presented in the 14th International Static Analysis
+Symposium, SAS 2007.
+
+This Library relies on the CAMLLIB Library written by Bertrand
+Jeannet, which is also available on the webside of INRIA gforge, like
+the present library.
+
+
+************************************************************
+*                      INTRODUCTION                        *
+************************************************************
+
+The lattice atomata are like finite automata, except that transitions
+are labelled by elements of a lattice instead of letters of a finite
+alphabet. Therefore, they can encode words over an infinite alphabet.
+
+The lattice is partitionned, and this partition determines operations
+like determinization and minimization. Except that, operations on
+lattice automata are quite similar to the operations on finite
+automata. Please read the SAS article for more details.
+
+All classical operations are implemented: union, intersection,
+inclusion test, determinization, minimization. The "complement" is
+also defined, but only for finite automata, which are a special case
+of lattice autmata with a trivial lattice.
+
+Moreover, since this library was implemented in order to represent the
+possible content of FIFO chanels or stacks, classical FIFO and LIFO
+operations are implemented. We also implemented a widening operator.
+
+
+
+************************************************************
+*            REPRESENTATION OF AUTOMATA                    *
+************************************************************
+
+Automata are implemented as explicit graphs (module FGraph of CAMLLIB)
+with additional information: definition of the lattice and of the
+partition, initial and final states, and some other informations that
+are useful for internal operations.
+
+Because of our initial goal (the representation of the possible
+content of FIFO channels), we implemented the lattice automata like
+the Queue-content Decision Diagrams (QDD) defined by Bernard Boigelot
+and Patrice Godefroid. It means that the content of N FIFO channel is
+encoded by a single word w, which is the concatenation of N subwords:
+w=w1#w2#...#wN. 
+
+This number N is called the dimension of the automaton. Binary
+operations (like union) are not allowed on automata of different
+dimensions. The implementation of lattice automata maintains this
+aspect explicitely: there is a set of initial state for each subpart
+of the automaton. The "real" initial states of the automaton are the
+initial states of the dimension 0, other sets are states with incoming
+transitions labelled by the separator #.
+
+
+************************************************************
+*             DESCRIPTION OF THE FILES                     *
+************************************************************
+
+We give here a small description of the caml source files
+
++ essai.ml : it is self-tests file, it does not implement anything.
+
++ lAutomaton.ml    : this is the main source files, where lattice
+   and               automata and their operation are implemented.
+  lAutomatonRep.ml : the interface is the file lAutomaton.mli
+
++ plattice.ml : this modules implements the operations on the
+                partitionned lattice.
+
++ regexp.ml : it defines the regular expressions, but no operation on
+  	      them since regular expression are only used in order to 
+	      construct a lattice automaton
+
++ stackQueue.ml     : The 3 modules are interfaces for operations on
++ stackQueueN.ml    : FIFO and LIFO. The difference is the number of 
++ stackQueueNRel.ml : queue/stack (1 or more) and, if there are more 
+  		      than 1 queue, you have the choice between a
+		      relational or a non§relational implementation.
+
+************************************************************
+*          IMPLEMENTATION OF FINITE AUTOMATA               *
+************************************************************
+
+If you just want to have a library implementing the classical finite
+automata, you can define a finite alphabet and only define
+one-dimensional automata. See the file essai.ml for some examples.
+
+
+
+
+
+
+ACKNOWLEDGEMENTS: 
+
+We thank Alexander Heussner and Gregoire Sutre for
+their active participation to debuging this library.

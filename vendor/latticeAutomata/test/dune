@@ -1,0 +1,7 @@
+(test
+ (name essai)
+ (libraries latticeAutomata stdlib-shims))
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))

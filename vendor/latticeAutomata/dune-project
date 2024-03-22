@@ -1,0 +1,16 @@
+(lang dune 3.6)
+
+(generate_opam_files true)
+
+(package
+ (name latticeAutomata)
+ (version 0.1)
+ (authors "Bertrand Jeannet, Tristan Le Gall")
+ (maintainers "Pavlo Tokariev <pavlo.tokariev@inria.fr>")
+ (synopsis "Abstract domain of the Lattice Automata")
+ (depends
+  ocaml
+  dune
+  camllib
+  stdlib-shims
+  (odoc :with-doc)))
